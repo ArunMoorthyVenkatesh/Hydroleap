@@ -1,0 +1,59 @@
+.all-projects-container {
+  position: relative;
+  height: 100vh;
+  overflow: hidden;
+  font-family: 'Times New Roman', serif;
+}
+
+.background-video {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+}
+
+.all-projects-content {
+  padding: 3rem 2rem;
+  color: white;
+  text-align: center;
+}
+
+.dashboard-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 2.5rem;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.error-message {
+  color: red;
+  font-weight: bold;
+}
+
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 2rem;
+  padding: 0 2rem;
+}
+
+.project-card {
+  background: rgba(255, 255, 255, 0.1); /* translucent white */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 18px;
+  padding: 2rem;
+  color: white;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+
+.no-projects {
+  color: #ddd;
+  font-style: italic;
+  margin-top: 1rem;
+}

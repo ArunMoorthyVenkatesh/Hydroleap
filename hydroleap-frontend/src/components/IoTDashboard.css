@@ -1,0 +1,150 @@
+/* Base Container */
+.iot-dashboard-container {
+  min-height: 100vh;
+  padding: 40px 20px;
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', Roboto, sans-serif;
+  color: #333;
+}
+
+/* Page Title */
+.projects-title {
+  text-align: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 0.5rem;
+}
+
+/* Device ID */
+.device-id {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+  margin-bottom: 2.5rem;
+}
+
+/* Grid for Status Cards */
+.project-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto 3rem auto;
+}
+
+/* Individual Status Card */
+.project-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  backdrop-filter: blur(10px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2) !important;
+  color: white !important;
+}
+
+
+/* Title inside Card */
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+/* Status Light */
+.status-light {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  margin: 0 auto;
+}
+
+.green {
+  background-color: #10b981;
+}
+
+.red {
+  background-color: #ef4444;
+}
+
+/* Gauge Grid */
+.gauge-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding-bottom: 50px;
+}
+
+/* Feedback Text */
+.loading,
+.error {
+  text-align: center;
+  font-size: 1rem;
+  font-weight: 500;
+  margin-top: 1.5rem;
+}
+
+.error {
+  color: #dc2626;
+}
+
+.report-button {
+  background-color: #0066cc;
+  color: white;
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+.report-section {
+  background: #f4f4f4;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 2rem;
+  font-family: monospace;
+  overflow-x: auto;
+}
+
+.history-section {
+  background-color: #000; /* full black */
+  padding: 1.5rem;
+  border-radius: 12px;
+  color: white;
+  margin-top: 2rem;
+  max-height: 300px;
+  overflow-y: auto;
+  font-family: monospace;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.history-section h2 {
+  color: #ffcc00; /* optional highlight */
+  margin-bottom: 1rem;
+}
+
+.history-section ul {
+  padding-left: 0;
+  list-style: none;
+}
+
+.history-section li {
+  margin-bottom: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 0.5rem;
+}
+
+.history-section pre {
+  background-color: #111;
+  color: #eee;
+  padding: 0.75rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
