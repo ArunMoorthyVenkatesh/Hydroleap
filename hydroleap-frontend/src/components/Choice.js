@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import seaVideo from "../assets/sea_1.mp4";
+//import seaVideo from "../assets/sea_1.mp4";
+import seaVideo from "../assets/sea_3.mp4";
 
 const Choice = () => {
   const navigate = useNavigate();

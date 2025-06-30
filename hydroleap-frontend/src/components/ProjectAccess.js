@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import seaVideo from "../assets/sea_6.mov";
-
+//import seaVideo from "../assets/sea_6.mov";
+import seaVideo from "../assets/sea_2.mov";
 const ProjectAccess = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
