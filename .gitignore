@@ -2,3 +2,5 @@
 *.env
 
 backend/config/aws.js
+hydroleap-frontend/src/assets/sea_6.mp4
+hydroleap-frontend/src/assets/sea_6.mov
