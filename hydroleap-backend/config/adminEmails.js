@@ -1,13 +1,13 @@
-const Admin = require("../models/Admin"); // adjust the path as needed
+const Admin = require("../models/Admin"); 
 
-// Function to fetch all admin emails from the database
+
 const fetchAdminEmails = async () => {
   try {
-    const admins = await Admin.find({}, "email"); // fetch only the email field
+    const admins = await Admin.find({}, "email");  
     return admins.map(admin => admin.email.trim().toLowerCase());
   } catch (error) {
     console.error("❌ Failed to fetch admin emails from DB:", error);
-    return []; // fallback to empty list
+    return []; 
   }
 };
 

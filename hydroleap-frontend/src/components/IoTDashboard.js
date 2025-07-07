@@ -34,7 +34,7 @@ const IoTDashboard = () => {
   if (!data) {
     return (
       <div className="dashboard">
-        <p className="error">Loading project data...</p>
+        <p className="error"></p>
       </div>
     );
   }

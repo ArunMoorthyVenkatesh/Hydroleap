@@ -9,7 +9,7 @@ exports.loginAdmin = async (req, res) => {
     const admin = await Admin.findOne({ email });
     if (!admin) return res.status(404).json({ message: "Admin not found" });
 
-    // Generate token
+
     const token = jwt.sign({ email: admin.email }, process.env.JWT_SECRET, {
       expiresIn: "2h",
     });

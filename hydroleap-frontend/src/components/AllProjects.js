@@ -2,8 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import seaVideo from "../assets/sea_7.mp4";
-import Header from "./Header222"; // ✅ Updated import
-import "./AllProjects.css";
+import "./AllProjects.css"; // keep your styles!
 
 const AllProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -25,7 +24,6 @@ const AllProjects = () => {
         });
         setProjects(res.data);
       } catch (err) {
-        console.error("❌ Error fetching projects:", err);
         setError("Failed to load project list.");
       }
     };
@@ -38,18 +36,12 @@ const AllProjects = () => {
   };
 
   return (
-    <div className="all-projects-container">
+    <>
       <video autoPlay muted loop className="background-video">
         <source src={seaVideo} type="video/mp4" />
       </video>
 
-      {/* ✅ Top-right header */}
-      <div style={{ position: "absolute", top: "20px", right: "30px", zIndex: 10 }}>
-        <Header />
-      </div>
-
       <div className="all-projects-content">
-        <h1 className="dashboard-title">All Projects</h1>
         {error ? (
           <p className="error-message">{error}</p>
         ) : projects.length === 0 ? (
@@ -70,7 +62,7 @@ const AllProjects = () => {
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 };
 

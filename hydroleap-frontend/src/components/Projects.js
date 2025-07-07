@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-//import seaVideo from "../assets/sea_6.mov";
+// import seaVideo from "../assets/sea_6.mov";
 import seaVideo from "../assets/sea_2.mov";
 import "./AvailableProjects.css";
 
@@ -10,33 +10,39 @@ const Projects = () => {
   const [assignedProjects, setAssignedProjects] = useState([]);
   const navigate = useNavigate();
 
+  // Fetch all available projects once (optional)
   useEffect(() => {
-    // Fetch all available projects (for reference, optional depending on your app)
     axios
       .get("http://localhost:5001/api/iot/projects")
       .then((res) => setProjects(res.data))
       .catch((err) => console.error("Failed to fetch projects", err));
+  }, []);
 
-    // Get user email from localStorage
-    const userEmail = localStorage.getItem("userEmail");
-    if (userEmail) {
-      axios
-        .get(`http://localhost:5001/api/projects/user/${userEmail}`)
-        .then((res) => {
-          if (Array.isArray(res.data.projects)) {
-            setAssignedProjects(res.data.projects);
-          } else {
-            console.warn("Assigned projects not an array", res.data);
-            setAssignedProjects([]);
-          }
-        })
-        .catch((err) => {
-          console.error("Failed to fetch assigned projects", err);
-          setAssignedProjects([]);
-        });
-    } else {
-      console.warn("User email not found in localStorage");
-    }
+  // Auto-refresh assigned projects every second
+  useEffect(() => {
+    const fetchAssignedProjects = () => {
+      const userEmail = localStorage.getItem("userEmail");
+      if (userEmail) {
+        axios
+          .get(`http://localhost:5001/api/projects/user/${userEmail}`)
+          .then((res) => {
+            if (Array.isArray(res.data.projects)) {
+              setAssignedProjects(res.data.projects);
+            } else {
+              setAssignedProjects([]);
+            }
+          })
+          .catch(() => setAssignedProjects([]));
+      } else {
+        setAssignedProjects([]);
+      }
+    };
+
+    fetchAssignedProjects(); // Initial fetch
+
+    const intervalId = setInterval(fetchAssignedProjects, 1000); // Every second
+
+    return () => clearInterval(intervalId); // Cleanup
   }, []);
 
   return (

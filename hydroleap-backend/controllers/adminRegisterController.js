@@ -4,12 +4,12 @@ const bcrypt = require("bcrypt");
 const PendingAdmin = require("../models/PendingAdmin");
 const Admin = require("../models/Admin");
 
-// 1. Register a new pending admin
+
 exports.registerPendingAdmin = async (req, res) => {
   try {
     const { name, email, phone, dob, gender, password } = req.body;
 
-    // Check if admin or pending admin already exists
+
     const existingAdmin = await Admin.findOne({ email });
     const existingPending = await PendingAdmin.findOne({ email });
     if (existingAdmin || existingPending) {
@@ -26,7 +26,7 @@ exports.registerPendingAdmin = async (req, res) => {
   }
 };
 
-// 2. Approve a pending admin
+
 exports.approvePendingAdmin = async (req, res) => {
   try {
     const { id } = req.params; // pending admin _id

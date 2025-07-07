@@ -3,14 +3,15 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-
 const app = express();
 
-// ✅ Middlewares
-app.use(cors({ origin: "http://localhost:3000", credentials: true }));
-app.use(express.json()); // Parses incoming JSON requests
+app.use(cors({
+  origin: "http://localhost:3000", // Frontend URL
+  credentials: true,
+}));
+app.use(express.json()); // Parse incoming JSON
 
-// ✅ Route imports
+// --- Route Imports ---
 const otpRoutes = require("./routes/otp");
 const authRoutes = require("./routes/auth");
 const notesRoutes = require("./routes/notes");
@@ -22,16 +23,27 @@ const adminLoginRoutes = require("./routes/adminLogin");
 const adminProfileRoutes = require("./routes/adminProfile");
 const adminAuthRoutes = require("./routes/adminAuth");
 const iotRoutes = require("./routes/iot2");
-const projectRoutes = require("./routes/projects");
-const projectRoutes2 = require("./routes/projects2"); // 🚨 NEW Project2 route
-const projectChangeLogs2 = require("./routes/projectChangeLogs2"); // 🚨 NEW ProjectChangeLog2 route
+
+const projectRoutes2 = require("./routes/projects2");
+const projectChangeLogs2 = require("./routes/projectChangeLogs2");
 const userRoutes = require("./routes/user");
 const projectListRoutes = require("./routes/projectList");
 const projectListRoutes_2 = require("./routes/projectList_2");
-const projectAccessRoutes = require("./routes/projectAccess");
+const projectAccessRoutes = require("./routes/projectAccess"); // <-- Project Access
 const checkRoutes = require("./routes/check");
+const historyRoutes = require("./routes/history");
+const { startProjectHistoryWatcher } = require("./utils/changeStreamLogger");  
 
-// ✅ Route Usage
+// Optional: Project history watcher
+let projectHistoryRoutes;
+try {
+  projectHistoryRoutes = require("./routes/projectHistory");
+} catch (e) {
+  projectHistoryRoutes = null;
+  console.warn("⚠️ '/routes/projectHistory.js' not found, skipping.");
+}
+
+// --- Route Usage ---
 app.use("/api/otp", otpRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/notes", notesRoutes);
@@ -41,26 +53,42 @@ app.use("/api/admin", adminApprovalRoutes);
 app.use("/api/admin-register", adminRegisterRoutes);
 app.use("/api/admin-login", adminLoginRoutes);
 app.use("/api/iot", iotRoutes);
-app.use("/api/projects", projectRoutes);
-app.use("/api/projects2", projectRoutes2); // 🚨 NEW Project2 route
-app.use("/api/project-change-logs2", projectChangeLogs2); // 🚨 NEW ProjectChangeLog2 route
+
+app.use("/api/projects2", projectRoutes2);
+app.use("/api/project-change-logs2", projectChangeLogs2);
 app.use("/api/user", userRoutes);
 app.use("/api/admin", adminProfileRoutes);
 app.use("/api/admin", adminAuthRoutes);
 app.use("/api/project-list", projectListRoutes);
 app.use("/api/project-list", projectListRoutes_2);
-app.use("/api/project-access", projectAccessRoutes);
+// FIX: Mount at /api/projects/project-access so your frontend works!
+app.use("/api/projects/project-access", projectAccessRoutes); 
 app.use("/api/check", checkRoutes);
 
+if (projectHistoryRoutes) {
+  app.use("/api/project-history", projectHistoryRoutes);
+}
+
+app.use("/api/history", historyRoutes);
+
+// --- Default root endpoint ---
 app.get("/", (req, res) => {
-  res.send("✅ Server is running with Notique & Hydroleap APIs and Project2 feature!");
+  res.send("✅ Server is running with Notique & Hydroleap APIs and full historic logging!");
 });
 
+// --- Mongoose Connection ---
 mongoose
   .connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
+  .then(() => {
+    console.log("✅ MongoDB connected");
+    // Start history watcher (optional)
+    if (typeof startProjectHistoryWatcher === "function") {
+      startProjectHistoryWatcher();
+    }
+  })
   .catch((err) => console.warn("❌ MongoDB connection failed:", err.message));
 
+// --- Start Server ---
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);

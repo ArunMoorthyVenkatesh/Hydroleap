@@ -10,11 +10,8 @@ import Notes from "./components/Notes";
 
 // Admin Components
 import AdminLoginPage from "./components/AdminLoginPage";
-import AdminDashboard from "./components/AdminDashboard";
-import PendingUserApproval from "./components/PendingUserApproval";
-import PendingAdminApproval from "./components/PendingAdminApproval";
-import ProjectAccessPage from "./components/ProjectAccessPage";
-import AdminProfilePage from "./components/AdminProfilePage";
+import AdminDashboard from "./components/AdminDashboard"; // SPA dashboard with all sections inside
+import ProjectAccessPage from "./components/ProjectAccessPage"; // <-- ADD THIS
 
 // User Components
 import UserDashboard from "./components/UserDashboard";
@@ -42,14 +39,10 @@ const App = () => {
         <Route path="/project/:projectId" element={<ProjectPage />} />
         <Route path="/iot/:projectId" element={<IoTDashboard2 />} />
 
-        {/* Admin Routes */}
+        {/* Admin Auth & SPA Dashboard */}
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/pending-users" element={<PendingUserApproval />} />
-        <Route path="/admin/pending-admins" element={<PendingAdminApproval />} />
-        <Route path="/admin/all-projects" element={<AllProjects />} />
-        <Route path="/admin/project-access" element={<ProjectAccessPage />} />
-        <Route path="/admin-profile" element={<AdminProfilePage />} />
+        <Route path="/admin/project-access" element={<ProjectAccessPage />} /> {/* <-- ADD THIS */}
 
         {/* User Routes */}
         <Route path="/user-dashboard" element={<UserDashboard />} />

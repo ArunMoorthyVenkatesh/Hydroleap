@@ -1,21 +1,20 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Header222 from "./Header222"; // ✅ Updated to Header222
-import seaVideo from "../assets/sea_7.mp4";
 
-const PendingAdminApproval = () => {
+const PendingAdminApprovalSection = () => {
   const [pendingAdmins, setPendingAdmins] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchPendingAdmins = async () => {
       try {
         const res = await axios.get("http://localhost:5001/api/admin/pending-admins");
         setPendingAdmins(res.data);
+        setError(null);
       } catch (error) {
-        console.error("Error fetching pending admins:", error);
+        setError("Failed to fetch pending admin requests.");
       }
     };
-
     fetchPendingAdmins();
   }, []);
 
@@ -25,114 +24,104 @@ const PendingAdminApproval = () => {
         id: adminId,
         action: decision,
       });
-
       setPendingAdmins(prev => prev.filter(admin => admin._id !== adminId));
       alert(`Admin ${decision === "approve" ? "approved" : "rejected"} successfully.`);
     } catch (error) {
-      console.error("Error processing request:", error);
       alert("Action failed.");
     }
   };
 
   return (
-    <div style={styles.container}>
-      <video autoPlay loop muted style={styles.video}>
-        <source src={seaVideo} type="video/mp4" />
-      </video>
-      <div style={styles.overlay}>
-        <Header222 /> {/* ✅ Header222 placed here */}
-        <h2 style={styles.title}>Pending Admin Approvals</h2>
-        {pendingAdmins.length === 0 ? (
-          <p style={styles.empty}>No pending admin requests.</p>
-        ) : (
-          <div style={styles.grid}>
-            {pendingAdmins.map((admin) => (
-              <div key={admin._id} style={styles.card}>
-                <p><strong>Name:</strong> {admin.firstName} {admin.middleName} {admin.lastName}</p>
-                <p><strong>Email:</strong> {admin.email}</p>
-                <p><strong>Phone:</strong> {admin.phone}</p>
-                <p><strong>DOB:</strong> {admin.dob}</p>
-                <p><strong>Gender:</strong> {admin.gender}</p>
-                <div style={styles.actions}>
-                  <button style={styles.accept} onClick={() => handleDecision(admin._id, "approve")}>Accept</button>
-                  <button style={styles.reject} onClick={() => handleDecision(admin._id, "reject")}>Reject</button>
-                </div>
+    <div style={styles.overlay}>
+      {error ? (
+        <p style={styles.error}>{error}</p>
+      ) : pendingAdmins.length === 0 ? (
+        <p style={styles.empty}>No pending admin requests.</p>
+      ) : (
+        <div style={styles.grid}>
+          {pendingAdmins.map((admin) => (
+            <div key={admin._id} style={styles.card}>
+              <p><strong>Name:</strong> {admin.firstName} {admin.middleName} {admin.lastName}</p>
+              <p><strong>Email:</strong> {admin.email}</p>
+              <p><strong>Phone:</strong> {admin.phone}</p>
+              <p><strong>DOB:</strong> {admin.dob}</p>
+              <p><strong>Gender:</strong> {admin.gender}</p>
+              <div style={styles.actions}>
+                <button style={styles.accept} onClick={() => handleDecision(admin._id, "approve")}>Accept</button>
+                <button style={styles.reject} onClick={() => handleDecision(admin._id, "reject")}>Reject</button>
               </div>
-            ))}
-          </div>
-        )}
-      </div>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
 const styles = {
-  container: {
-    position: "relative",
-    height: "100vh",
-    overflowY: "auto",
-    fontFamily: "Times New Roman, serif",
-  },
-  video: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    minWidth: "100%",
-    minHeight: "100%",
-    objectFit: "cover",
-    zIndex: -1,
-  },
   overlay: {
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
-    minHeight: "100vh",
-    color: "#fff",
+    backgroundColor: "rgba(255,255,255,0.96)",
+    color: "#222",
     padding: "2rem",
+    borderRadius: "18px",
+    boxShadow: "0 2px 18px rgba(30, 200, 180, 0.07)",
+    maxWidth: "820px",
+    margin: "0 auto"
   },
   title: {
     textAlign: "center",
     marginBottom: "2rem",
     fontSize: "2rem",
     fontWeight: "bold",
+    color: "#23c1b5"
+  },
+  error: {
+    color: "red",
+    textAlign: "center",
+    marginBottom: "1rem"
   },
   empty: {
     textAlign: "center",
-    fontSize: "1.2rem",
+    fontSize: "1.1rem",
+    color: "#555"
   },
   grid: {
     display: "flex",
     flexWrap: "wrap",
-    gap: "1rem",
+    gap: "1.5rem",
     justifyContent: "center",
   },
   card: {
-    backgroundColor: "#111",
-    padding: "1rem",
+    backgroundColor: "#f8ffff",
+    padding: "1rem 1.2rem",
     borderRadius: "12px",
-    border: "1px solid #444",
+    border: "1px solid #e0f3f1",
     width: "300px",
-    backdropFilter: "blur(6px)",
+    boxShadow: "0 2px 10px rgba(30,200,180,0.06)",
   },
   actions: {
     display: "flex",
     justifyContent: "space-between",
-    marginTop: "1rem",
+    marginTop: "1.2rem",
   },
   accept: {
-    backgroundColor: "#2ecc71",
+    backgroundColor: "#23c1b5",
     color: "#fff",
     border: "none",
-    padding: "0.5rem 1rem",
+    padding: "0.5rem 1.1rem",
     borderRadius: "5px",
     cursor: "pointer",
+    fontWeight: 600,
   },
   reject: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: "salmon",
     color: "#fff",
     border: "none",
-    padding: "0.5rem 1rem",
+    padding: "0.5rem 1.1rem",
     borderRadius: "5px",
     cursor: "pointer",
+    fontWeight: 600,
   },
 };
 
-export default PendingAdminApproval;
+export default PendingAdminApprovalSection;
