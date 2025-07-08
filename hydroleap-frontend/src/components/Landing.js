@@ -9,7 +9,7 @@ const Landing = () => {
   useEffect(() => {
     const handleTrigger = () => {
       if (triggerRef.current) {
-        triggerRef.current(); 
+        triggerRef.current();
       }
     };
 
@@ -17,10 +17,14 @@ const Landing = () => {
       if (e.code === "Enter" || e.code === "Space") handleTrigger();
     };
 
+    // Set timeout to auto-navigate after 3 seconds (1500ms)
+    const autoNavTimeout = setTimeout(handleTrigger, 1500);
+
     document.addEventListener("keydown", handleKeyDown);
     document.addEventListener("click", handleTrigger);
 
     return () => {
+      clearTimeout(autoNavTimeout);
       document.removeEventListener("keydown", handleKeyDown);
       document.removeEventListener("click", handleTrigger);
     };
@@ -36,7 +40,7 @@ const Landing = () => {
           overflow: "hidden",
         }}
       >
-         <video
+        <video
           autoPlay
           loop
           muted
@@ -56,7 +60,7 @@ const Landing = () => {
           </p>
         </video>
 
-         <div
+        <div
           style={{
             position: "absolute",
             top: "50%",

@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import seaVideo from "../assets/sea_4.mp4";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -125,31 +124,36 @@ const Register = () => {
 
   return (
     <div style={styles.wrapper}>
-      <video autoPlay loop muted playsInline style={styles.video}>
-        <source src={seaVideo} type="video/mp4" />
-      </video>
 
       <div style={styles.overlay}>
         <Header />
         <div style={styles.centerWrapper}>
           <div style={styles.container}>
             <h2 style={styles.title}>Register</h2>
-
             <div style={styles.roleSwitch}>
               <button
                 onClick={() => setRole("user")}
-                style={{ ...styles.roleButton, backgroundColor: role === "user" ? "#ffffff44" : "transparent" }}
+                style={{
+                  ...styles.roleButton,
+                  background: role === "user" ? ACCENT + "22" : "rgba(255,255,255,0.06)",
+                  color: role === "user" ? ACCENT : "#187d69",
+                  fontWeight: role === "user" ? "700" : "600"
+                }}
               >
                 Register as User
               </button>
               <button
                 onClick={() => setRole("admin")}
-                style={{ ...styles.roleButton, backgroundColor: role === "admin" ? "#ffffff44" : "transparent" }}
+                style={{
+                  ...styles.roleButton,
+                  background: role === "admin" ? ACCENT + "22" : "rgba(255,255,255,0.06)",
+                  color: role === "admin" ? ACCENT : "#187d69",
+                  fontWeight: role === "admin" ? "700" : "600"
+                }}
               >
                 Register as Admin
               </button>
             </div>
-
             <div style={styles.form}>
               <input name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} style={styles.input} />
               {errors.firstName && <span style={styles.error}>{errors.firstName}</span>}
@@ -177,8 +181,10 @@ const Register = () => {
                     }}
                     style={{
                       ...styles.genderButton,
-                      backgroundColor: form.gender === option ? "#ffffff44" : "transparent",
-                      borderColor: form.gender === option ? "#fff" : "rgba(255,255,255,0.3)",
+                      borderColor: form.gender === option ? ACCENT : "rgba(35,193,181,0.16)",
+                      color: form.gender === option ? "#fff" : ACCENT,
+                      background: form.gender === option ? ACCENT : "rgba(255,255,255,0.07)",
+                      fontWeight: form.gender === option ? "700" : "600",
                     }}
                   >
                     {option}
@@ -214,77 +220,130 @@ const Register = () => {
   );
 };
 
+const ACCENT = "#21c6bc";
+const ACCENT_SOFT = "#e0fcfa";
+
 const styles = {
-  wrapper: { position: "relative", height: "100vh", overflow: "hidden", fontFamily: "Times New Roman, serif" },
-  video: { position: "absolute", width: "100%", height: "100%", objectFit: "cover", top: 0, left: 0, zIndex: 0 },
-  overlay: { position: "relative", zIndex: 1, height: "100%", width: "100%", display: "flex", flexDirection: "column", color: "#fff" },
-  centerWrapper: { flex: 1, display: "flex", justifyContent: "center", alignItems: "center" },
+  wrapper: {
+    position: "relative",
+    height: "100vh",
+    overflow: "hidden",
+    fontFamily: "Times New Roman, serif",
+    background: "linear-gradient(135deg, #e3fbfa 0%, #fafdff 100%)",
+  },
+  overlay: {
+    position: "relative",
+    zIndex: 1,
+    height: "100%",
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    color: "#222",
+  },
+  centerWrapper: {
+    flex: 1,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
   container: {
-    backdropFilter: "blur(12px)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    borderRadius: "15px",
+    backdropFilter: "blur(14px)",
+    background: "rgba(255,255,255,0.95)",
+    borderRadius: "18px",
     padding: "1.5rem",
     width: "300px",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 8px 28px 0 rgba(60,220,200,0.08), 0 1.5px 4px 0 #a3edea",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    border: "1.5px solid #e0fcfa",
   },
-  title: { fontSize: "1.8rem", fontWeight: "bold", marginBottom: "1rem", fontFamily: "Georgia, serif" },
-  roleSwitch: { display: "flex", justifyContent: "center", gap: "0.5rem", marginBottom: "1rem" },
+  title: {
+    fontSize: "1.8rem",
+    fontWeight: "bold",
+    marginBottom: "1rem",
+    fontFamily: "Georgia, serif",
+    color: ACCENT,
+    letterSpacing: ".03em",
+  },
+  roleSwitch: {
+    display: "flex",
+    justifyContent: "center",
+    gap: "0.5rem",
+    marginBottom: "1rem",
+    width: "100%",
+  },
   roleButton: {
     flex: 1,
     padding: "0.5rem",
     borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.4)",
-    color: "#fff",
-    fontSize: "0.95rem",
-    backgroundColor: "transparent",
+    border: "1px solid #c9f8f6",
+    color: ACCENT,
+    fontSize: "0.97rem",
+    backgroundColor: ACCENT_SOFT,
     cursor: "pointer",
-    transition: "all 0.3s",
+    transition: "all 0.25s",
+    fontWeight: 600,
   },
-  form: { display: "flex", flexDirection: "column", width: "100%" },
+  form: {
+    display: "flex",
+    flexDirection: "column",
+    width: "100%",
+  },
   input: {
     padding: "0.6rem 0.8rem",
-    fontSize: "0.95rem",
+    fontSize: "0.97rem",
     fontFamily: "inherit",
     borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "rgba(255,255,255,0.15)",
-    color: "#fff",
-    marginBottom: "0.75rem",
+    border: "1px solid #c9f8f6",
+    backgroundColor: "#f6ffff",
+    color: "#2c4a4a",
+    marginBottom: "0.7rem",
     outline: "none",
-    backdropFilter: "blur(4px)",
+    transition: "border .2s, background .2s",
+    boxShadow: "0 0.5px 2px #e0fcfa",
   },
   button: {
     padding: "0.7rem 1rem",
-    backgroundColor: "#ffffff33",
+    background: "linear-gradient(90deg, #21c6bc 10%, #85ede5 100%)",
     color: "#fff",
-    border: "1px solid rgba(255,255,255,0.4)",
+    border: "none",
     borderRadius: "8px",
-    fontWeight: "600",
+    fontWeight: "700",
     cursor: "pointer",
     width: "100%",
-    transition: "all 0.3s",
+    transition: "all 0.25s",
+    marginTop: "0.2rem",
+    boxShadow: "0 2px 8px 0 #b0ece8",
+    letterSpacing: ".02em"
   },
-  genderGroup: { display: "flex", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.75rem" },
+  genderGroup: {
+    display: "flex",
+    justifyContent: "space-between",
+    gap: "0.5rem",
+    marginBottom: "0.7rem",
+    marginTop: "-0.1rem"
+  },
   genderButton: {
     flex: 1,
     padding: "0.5rem",
     borderRadius: "20px",
-    border: "1px solid rgba(255,255,255,0.3)",
-    color: "#fff",
-    fontFamily: "Times New Roman, serif",
-    backgroundColor: "transparent",
+    border: "1.5px solid #b9efed",
+    color: ACCENT,
+    backgroundColor: "#edfcfb",
+    fontFamily: "inherit",
     cursor: "pointer",
-    fontSize: "0.95rem",
+    fontSize: "0.97rem",
+    fontWeight: 600,
+    transition: "all 0.2s"
   },
   error: {
-    color: "#ffaaaa",
+    color: "#ff8383",
     fontSize: "0.8rem",
     marginTop: "-0.6rem",
     marginBottom: "0.5rem",
     paddingLeft: "0.2rem",
+    fontWeight: 600,
   },
 };
 

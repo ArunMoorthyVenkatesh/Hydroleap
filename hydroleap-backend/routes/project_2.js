@@ -1,6 +1,8 @@
+// routes/projects.js
+
 const express = require("express");
 const router = express.Router();
-const Project = require("../models/Project"); // your actual project model
+const Project = require("../models/Project");
 const { logHistory } = require("../utils/historyLogger");
 
 // GET all projects
@@ -8,6 +10,21 @@ router.get("/", async (req, res) => {
   try {
     const projects = await Project.find();
     res.json(projects);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET all projects assigned to a user (by email)
+// -- TEMP: Returns all projects. Replace logic if you add assignedUsers field!
+router.get("/user/:email", async (req, res) => {
+  const { email } = req.params;
+  try {
+    // If you add 'assignedUsers: [String]' in your model, use:
+    // const projects = await Project.find({ assignedUsers: email });
+    // Otherwise, TEMP: return all projects for now
+    const projects = await Project.find();
+    res.json({ projects: projects.map(p => p.projectId) });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

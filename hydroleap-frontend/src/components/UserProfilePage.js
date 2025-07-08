@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import seaVideo from "../assets/sea_7.mp4";
 import Header from "./Header"; // ✅ Ensures logo is included
+
+const ACCENT = "#21c6bc";
 
 const UserProfilePage = () => {
   const [user, setUser] = useState(null);
@@ -24,43 +25,34 @@ const UserProfilePage = () => {
 
   if (!user)
     return (
-      <p style={{ color: "#fff", padding: "2rem" }}>Loading profile...</p>
+      <p style={{ color: ACCENT, padding: "2rem" }}>Loading profile...</p>
     );
 
   return (
     <div style={styles.container}>
-      <video autoPlay muted loop style={styles.videoBackground}>
-        <source src={seaVideo} type="video/mp4" />
-      </video>
-
-      <Header /> {/* ✅ Add logo/header to top without disturbing layout */}
+      <Header />
 
       <div style={styles.overlay}>
         <div style={styles.card}>
           <h2 style={styles.title}>My Profile</h2>
-
           <div style={styles.formGroup}>
-            <label>Name:</label>
+            <label style={styles.label}>Name:</label>
             <p style={styles.value}>{user.name}</p>
           </div>
-
           <div style={styles.formGroup}>
-            <label>Email:</label>
+            <label style={styles.label}>Email:</label>
             <p style={styles.value}>{user.email}</p>
           </div>
-
           <div style={styles.formGroup}>
-            <label>Phone:</label>
+            <label style={styles.label}>Phone:</label>
             <p style={styles.value}>{user.phone}</p>
           </div>
-
           <div style={styles.formGroup}>
-            <label>Gender:</label>
+            <label style={styles.label}>Gender:</label>
             <p style={styles.value}>{user.gender}</p>
           </div>
-
           <div style={styles.formGroup}>
-            <label>Date of Birth:</label>
+            <label style={styles.label}>Date of Birth:</label>
             <p style={styles.value}>
               {new Date(user.dob).toLocaleDateString()}
             </p>
@@ -73,55 +65,53 @@ const UserProfilePage = () => {
 
 const styles = {
   container: {
-    position: "relative",
-    height: "100vh",
-    overflow: "hidden",
+    minHeight: "100vh",
+    background: "linear-gradient(135deg, #e6fcfa 0%, #fafdff 100%)",
     fontFamily: "'Times New Roman', serif",
   },
-  videoBackground: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    height: "100%",
-    width: "100%",
-    objectFit: "cover",
-    zIndex: -1,
-  },
   overlay: {
-    position: "absolute", // ensures card sits over everything
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    minHeight: "100vh",
+    width: "100vw",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
     padding: "2rem",
-    zIndex: 1,
   },
   card: {
-    background: "rgba(0, 0, 0, 0.4)",
-    border: "1px solid rgba(255,255,255,0.25)",
-    borderRadius: "16px",
-    padding: "2rem",
+    background: "rgba(255,255,255,0.95)",
+    border: `1.5px solid ${ACCENT}33`,
+    borderRadius: "18px",
+    padding: "2.3rem 2rem",
     width: "100%",
-    maxWidth: "500px",
-    color: "#fff",
-    backdropFilter: "blur(12px)",
-    boxShadow: "0 8px 24px rgba(0,0,0,0.4)",
+    maxWidth: "370px",
+    color: "#177e78",
+    backdropFilter: "blur(9px) saturate(180%)",
+    boxShadow: "0 4px 36px #bbf2eb",
+    marginTop: "1.2rem",
   },
   title: {
     fontSize: "2rem",
-    marginBottom: "1.5rem",
+    marginBottom: "1.6rem",
     textAlign: "center",
-    fontWeight: "bold",
-    textShadow: "0 2px 6px rgba(0,0,0,0.6)",
+    fontWeight: "700",
+    color: ACCENT,
+    letterSpacing: ".01em",
+    textShadow: "0 2px 12px #c5f5f1, 0 2px 6px #17a6a266",
   },
   formGroup: {
-    marginBottom: "1rem",
+    marginBottom: "1.1rem",
+  },
+  label: {
+    color: "#187d69",
+    fontWeight: 600,
+    letterSpacing: ".01em",
   },
   value: {
-    marginTop: "0.3rem",
+    margin: "0.22rem 0 0 0",
+    fontSize: "1.09rem",
+    color: "#137f7d",
+    wordBreak: "break-word",
+    paddingLeft: ".2rem",
   },
 };
 

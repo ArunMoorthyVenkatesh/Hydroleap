@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-// import seaVideo from "../assets/sea_6.mov";
-import seaVideo from "../assets/sea_2.mov";
 import "./AvailableProjects.css";
 
 const Projects = () => {
@@ -47,10 +45,7 @@ const Projects = () => {
 
   return (
     <div className="project-wrapper">
-      <video autoPlay muted loop className="project-video">
-        <source src={seaVideo} type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+
 
       <div className="project-overlay">
         <div className="project-container">

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import seaVideo from "../assets/sea_7.mp4";
 import "./AllProjects.css"; // keep your styles!
 
 const AllProjects = () => {
@@ -37,9 +36,7 @@ const AllProjects = () => {
 
   return (
     <>
-      <video autoPlay muted loop className="background-video">
-        <source src={seaVideo} type="video/mp4" />
-      </video>
+
 
       <div className="all-projects-content">
         {error ? (

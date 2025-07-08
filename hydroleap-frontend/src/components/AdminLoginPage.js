@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
 import Header from "./Header";
-import seaVideo from "../assets/sea_5.mp4";
 import FadeTransition from "./FadeTransition";
 
 const AdminLoginPage = () => {
@@ -40,10 +39,7 @@ const AdminLoginPage = () => {
   return (
     <FadeTransition targetPath="/admin" externalTriggerRef={fadeRef}>
       <div style={styles.container}>
-        <video autoPlay muted loop style={styles.video}>
-          <source src={seaVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+
 
         <Header />
 
@@ -75,6 +71,9 @@ const AdminLoginPage = () => {
   );
 };
 
+const ACCENT = "#21c6bc";
+const WHITE = "#ffffff";
+
 const styles = {
   container: {
     position: "relative",
@@ -82,6 +81,7 @@ const styles = {
     width: "100vw",
     overflow: "hidden",
     fontFamily: "'Times New Roman', serif",
+    background: "linear-gradient(135deg, #e3fbfa 0%, #fafdff 100%)",
   },
   video: {
     position: "absolute",
@@ -95,23 +95,26 @@ const styles = {
   overlay: {
     position: "relative",
     zIndex: 1,
-    background: "rgba(255, 255, 255, 0.05)",
-    backdropFilter: "blur(14px) saturate(180%)",
-    WebkitBackdropFilter: "blur(14px) saturate(180%)",
+    background: "rgba(255, 255, 255, 0.92)",
+    backdropFilter: "blur(15px) saturate(175%)",
+    WebkitBackdropFilter: "blur(15px) saturate(175%)",
     borderRadius: "20px",
     padding: "2.5rem",
     maxWidth: "400px",
     margin: "auto",
     top: "50%",
     transform: "translateY(-50%)",
-    color: "#fff",
-    boxShadow: "0 10px 40px rgba(0, 0, 0, 0.4)",
+    color: "#222",
+    boxShadow: "0 10px 36px 0 #a3edea",
     textAlign: "center",
+    border: "1.5px solid #e0fcfa",
   },
   title: {
     fontSize: "2.2rem",
     fontWeight: "700",
     marginBottom: "1.5rem",
+    color: ACCENT,
+    letterSpacing: ".01em",
   },
   form: {
     display: "flex",
@@ -122,29 +125,34 @@ const styles = {
     marginBottom: "1rem",
     fontSize: "1rem",
     borderRadius: "10px",
-    border: "1px solid rgba(255, 255, 255, 0.3)",
+    border: "1.5px solid #b7f4ee",
     outline: "none",
-    backgroundColor: "rgba(255, 255, 255, 0.15)",
-    color: "#fff",
+    backgroundColor: "#f7fefe",
+    color: "#185754",
     transition: "all 0.3s ease",
-    boxShadow: "inset 0 1px 2px rgba(255, 255, 255, 0.1)",
+    boxShadow: "inset 0 1px 2px #edfcfb",
   },
   button: {
     padding: "0.8rem",
     fontSize: "1rem",
     borderRadius: "10px",
     border: "none",
-    backgroundColor: "#2f2f2f",
-    color: "#fff",
-    fontWeight: "600",
+    background: "linear-gradient(90deg, #21c6bc, #85ede5 100%)",
+    color: WHITE,
+    fontWeight: "700",
     cursor: "pointer",
-    transition: "background-color 0.3s ease",
+    transition: "background 0.3s",
+    boxShadow: "0 2px 8px #b0ece8",
+    marginTop: "0.5rem",
+    letterSpacing: ".02em",
   },
   error: {
     marginTop: "1rem",
-    color: "#ff4d4d",
+    color: "#ff8383",
     fontSize: "0.9rem",
+    fontWeight: 600,
   },
 };
+
 
 export default AdminLoginPage;

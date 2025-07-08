@@ -3,7 +3,6 @@ import {
   FiMenu, FiUsers, FiUserCheck, FiUserPlus,
   FiClipboard, FiList, FiLogOut
 } from "react-icons/fi";
-import seaVideo from "../assets/sea_7.mp4";
 import Header from "./Header222";
 import axios from "axios";
 import "./AdminDashboard.css";
@@ -162,13 +161,7 @@ export default function AdminDashboard() {
 
   return (
     <div style={{ minHeight: "100vh", position: "relative", background: "#f4f8fa" }}>
-      {/* Video background */}
-      <video autoPlay muted loop style={{
-        position: "fixed", top: 0, left: 0, width: "100vw", height: "100vh",
-        objectFit: "cover", zIndex: -1, opacity: 0.20
-      }}>
-        <source src={seaVideo} type="video/mp4" />
-      </video>
+
 
       {/* Header */}
       <div style={{

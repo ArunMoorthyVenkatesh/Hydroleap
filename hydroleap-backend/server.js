@@ -6,9 +6,13 @@ const cors = require("cors");
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:3000", // Frontend URL
+  origin: [
+    "http://localhost:3000",
+    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com"
+  ],
   credentials: true,
 }));
+
 app.use(express.json()); // Parse incoming JSON
 
 // --- Route Imports ---
@@ -33,6 +37,7 @@ const projectAccessRoutes = require("./routes/projectAccess"); // <-- Project Ac
 const checkRoutes = require("./routes/check");
 const historyRoutes = require("./routes/history");
 const { startProjectHistoryWatcher } = require("./utils/changeStreamLogger");  
+const userProjectsRoutes = require("./routes/userProjects");
 
 // Optional: Project history watcher
 let projectHistoryRoutes;
@@ -64,6 +69,7 @@ app.use("/api/project-list", projectListRoutes_2);
 // FIX: Mount at /api/projects/project-access so your frontend works!
 app.use("/api/projects/project-access", projectAccessRoutes); 
 app.use("/api/check", checkRoutes);
+app.use("/api/user-projects", userProjectsRoutes);
 
 if (projectHistoryRoutes) {
   app.use("/api/project-history", projectHistoryRoutes);

@@ -1,7 +1,6 @@
 import React, { useState, useRef } from "react";
 import { loginUser } from "../api";
 import Header from "./Header";
-import seaVideo from "../assets/sea_3.mp4";
 import FadeTransition from "./FadeTransition";
 import { useNavigate } from "react-router-dom";
 
@@ -48,10 +47,7 @@ const Login = () => {
   return (
     <FadeTransition targetPath="/user-dashboard" externalTriggerRef={triggerFadeRef}>
       <div style={styles.wrapper}>
-        <video autoPlay loop muted playsInline style={styles.video}>
-          <source src={seaVideo} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
+
 
         <div style={styles.overlay}>
           <Header />
@@ -107,21 +103,14 @@ const Login = () => {
   );
 };
 
+const ACCENT = "#21c6bc";
 const styles = {
   wrapper: {
     position: "relative",
     height: "100vh",
     overflow: "hidden",
     fontFamily: "Times New Roman, serif",
-  },
-  video: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    objectFit: "cover",
-    top: 0,
-    left: 0,
-    zIndex: 0,
+    background: "linear-gradient(135deg, #e3fbfa 0%, #fafdff 100%)",
   },
   overlay: {
     position: "relative",
@@ -130,7 +119,7 @@ const styles = {
     width: "100%",
     display: "flex",
     flexDirection: "column",
-    color: "#fff",
+    color: "#222",
   },
   centerWrapper: {
     flex: 1,
@@ -139,22 +128,26 @@ const styles = {
     alignItems: "center",
   },
   container: {
-    backdropFilter: "blur(12px)",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backdropFilter: "blur(13px) saturate(170%)",
+    WebkitBackdropFilter: "blur(13px) saturate(170%)",
+    background: "rgba(255,255,255,0.91)",
     borderRadius: "15px",
     padding: "2rem",
     width: "350px",
-    boxShadow: "0 8px 24px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 8px 30px 0 #b0f2ee",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
     animation: "fadeIn 1s ease forwards",
+    border: "1.5px solid #e0fcfa",
   },
   title: {
     fontSize: "2rem",
     fontWeight: "bold",
     marginBottom: "1.5rem",
     fontFamily: "Georgia, serif",
+    color: ACCENT,
+    letterSpacing: ".01em",
   },
   form: {
     display: "flex",
@@ -166,9 +159,9 @@ const styles = {
     fontSize: "1rem",
     fontFamily: "inherit",
     borderRadius: "8px",
-    border: "1px solid rgba(255,255,255,0.3)",
-    backgroundColor: "rgba(255,255,255,0.15)",
-    color: "#fff",
+    border: "1.5px solid #b7f4ee",
+    backgroundColor: "#f7fefe",
+    color: "#185754",
     marginBottom: "1rem",
     outline: "none",
     backdropFilter: "blur(4px)",
@@ -176,25 +169,28 @@ const styles = {
   },
   button: {
     padding: "0.75rem 1rem",
-    backgroundColor: "#ffffff33",
+    background: "linear-gradient(90deg, #21c6bc, #8feee6 100%)",
     color: "#fff",
-    border: "1px solid rgba(255,255,255,0.4)",
+    border: "none",
     borderRadius: "8px",
-    fontWeight: "600",
+    fontWeight: "700",
     cursor: "pointer",
     width: "100%",
     transition: "all 0.3s",
+    boxShadow: "0 2px 10px #b0ece8",
+    letterSpacing: ".02em",
   },
   orText: {
     textAlign: "center",
     fontSize: "0.95rem",
-    color: "#ddd",
+    color: "#8fc1bb",
     margin: "1rem 0",
   },
   error: {
     fontSize: "0.85rem",
-    color: "salmon",
+    color: "#ff6f7d",
     marginBottom: "0.5rem",
+    fontWeight: "600",
   },
 };
 

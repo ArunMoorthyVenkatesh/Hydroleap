@@ -2,7 +2,8 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
-import seaVideo from "../assets/sea_7.mp4";
+
+const ACCENT = "#21c6bc";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
@@ -17,48 +18,41 @@ const UserDashboard = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("userEmail"); // 🧹 Optional: clean up stored email
+    localStorage.removeItem("userEmail");
     navigate("/login");
   };
 
   return (
     <div style={styles.container}>
-      <video autoPlay muted loop style={styles.videoBackground}>
-        <source src={seaVideo} type="video/mp4" />
-      </video>
-
       <div style={styles.content}>
         <Header />
         <h2 style={styles.title}>User Dashboard</h2>
-
         <div style={styles.grid}>
           <div
             style={styles.card}
             onClick={() => navigate("/profile")}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
           >
-            <h3>Profile</h3>
-            <p>View and manage your user profile</p>
+            <h3 style={styles.cardTitle}>Profile</h3>
+            <p style={styles.cardText}>View and manage your user profile</p>
           </div>
-
           <div
             style={styles.card}
-            onClick={() => navigate("/user/projects")} // ✅ Updated path
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onClick={() => navigate("/user/projects")}
+            onMouseEnter={e => (e.currentTarget.style.transform = "scale(1.05)")}
+            onMouseLeave={e => (e.currentTarget.style.transform = "scale(1)")}
           >
-            <h3>Projects</h3>
-            <p>See your assigned or created projects</p>
+            <h3 style={styles.cardTitle}>Projects</h3>
+            <p style={styles.cardText}>See your assigned or created projects</p>
           </div>
         </div>
-
         <div style={styles.logoutWrapper}>
           <button
             onClick={handleLogout}
             style={styles.logoutButton}
-            onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.05)")}
-            onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+            onMouseEnter={e => (e.currentTarget.style.filter = "brightness(0.93)")}
+            onMouseLeave={e => (e.currentTarget.style.filter = "brightness(1)")}
           >
             Logout
           </button>
@@ -71,48 +65,60 @@ const UserDashboard = () => {
 const styles = {
   container: {
     position: "relative",
-    height: "100vh",
-    overflow: "hidden",
+    minHeight: "100vh",
+    background: "linear-gradient(135deg, #e6fcfa 0%, #fafdff 100%)",
     fontFamily: "'Times New Roman', serif",
-  },
-  videoBackground: {
-    position: "fixed",
-    top: 0,
-    left: 0,
-    width: "100vw",
-    height: "100vh",
-    objectFit: "cover",
-    zIndex: -1,
   },
   content: {
     position: "relative",
     padding: "3rem 2rem",
-    color: "#fff",
+    color: "#11544c",
     textAlign: "center",
+    zIndex: 1,
   },
   title: {
-    fontSize: "3rem",
-    marginBottom: "2.5rem",
+    fontSize: "2.7rem",
+    marginBottom: "2.2rem",
     fontWeight: "700",
-    textShadow: "0 2px 5px rgba(0,0,0,0.5)",
+    color: ACCENT,
+    letterSpacing: ".01em",
+    textShadow: "0 2px 18px #c5f5f1, 0 2px 5px rgba(40,180,170,0.18)",
   },
   grid: {
     display: "flex",
     justifyContent: "center",
     gap: "2rem",
     flexWrap: "wrap",
+    marginBottom: "1rem",
   },
   card: {
-    background: "rgba(0, 0, 0, 0.25)",
-    border: "1px solid rgba(255, 255, 255, 0.3)",
+    background: "rgba(255, 255, 255, 0.94)",
+    border: `1.5px solid ${ACCENT}33`,
     borderRadius: "18px",
-    padding: "2rem",
+    padding: "2rem 1.3rem",
     width: "260px",
     cursor: "pointer",
-    backdropFilter: "blur(6px)",
-    color: "#fff",
-    boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
-    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+    backdropFilter: "blur(9px) saturate(180%)",
+    color: "#11786e",
+    boxShadow: "0 4px 30px #bbf2eb",
+    transition: "transform 0.3s, box-shadow 0.3s, background 0.3s, filter 0.2s",
+    fontWeight: "600",
+    fontSize: "1.08rem",
+    marginBottom: "1.2rem",
+  },
+  cardTitle: {
+    margin: 0,
+    marginBottom: ".6rem",
+    fontSize: "1.22rem",
+    color: ACCENT,
+    fontWeight: "700",
+    letterSpacing: ".01em",
+  },
+  cardText: {
+    margin: 0,
+    color: "#177e78",
+    fontWeight: "500",
+    fontSize: "1rem",
   },
   logoutWrapper: {
     marginTop: "2.5rem",
@@ -121,15 +127,17 @@ const styles = {
   },
   logoutButton: {
     padding: "0.8rem 2.2rem",
-    backgroundColor: "rgba(0,0,0,0.4)",
-    border: "1px solid rgba(255,255,255,0.2)",
+    background: `linear-gradient(90deg, ${ACCENT} 0%, #79ece4 100%)`,
+    border: "none",
     borderRadius: "12px",
     color: "#fff",
-    fontWeight: "600",
+    fontWeight: "700",
     fontSize: "1rem",
     cursor: "pointer",
-    backdropFilter: "blur(4px)",
-    transition: "all 0.3s ease",
+    boxShadow: "0 2px 16px #b5edea",
+    transition: "all 0.26s",
+    letterSpacing: ".01em",
+    outline: "none",
   },
 };
 

@@ -15,7 +15,7 @@ import ProjectAccessPage from "./components/ProjectAccessPage"; // <-- ADD THIS
 
 // User Components
 import UserDashboard from "./components/UserDashboard";
-import UserProfilePage from "./components/UserProfilePage";
+import UserProfilePage from "./components/UserProfilePage";      // <-- CORRECT IMPORT
 import UserProjectsPage from "./components/UserProjectsPage";
 
 // Shared Components
@@ -42,11 +42,11 @@ const App = () => {
         {/* Admin Auth & SPA Dashboard */}
         <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/project-access" element={<ProjectAccessPage />} /> {/* <-- ADD THIS */}
+        <Route path="/admin/project-access" element={<ProjectAccessPage />} />
 
         {/* User Routes */}
         <Route path="/user-dashboard" element={<UserDashboard />} />
-        <Route path="/profile" element={<UserProfilePage />} />
+        <Route path="/profile" element={<UserProfilePage />} />    {/* <-- FIXED */}
         <Route path="/user/projects" element={<UserProjectsPage />} />
       </Routes>
     </Router>
