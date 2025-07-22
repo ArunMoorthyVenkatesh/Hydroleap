@@ -10,8 +10,8 @@ const LoggedInInfo = () => {
     const fetchInfo = async () => {
       try {
         const endpoint = localStorage.getItem("adminToken")
-          ? "http://localhost:5001/api/admin/me"
-          : "http://localhost:5001/api/user/me";
+          ? "http://54.165.244.9:5001/api/admin/me"
+          : "http://54.165.244.9:5001/api/user/me";
 
         const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },

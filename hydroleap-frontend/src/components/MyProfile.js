@@ -24,6 +24,12 @@ const MyProfile = () => {
     <div style={styles.page}>
       <Header />
       <div style={styles.container}>
+
+        {/* Back Button */}
+        <button onClick={() => navigate(-1)} style={styles.backButton}>
+          ← Back
+        </button>
+
         <h2 style={styles.title}>Admin Profile</h2>
         <p style={styles.label}>Logged in as:</p>
         <p style={styles.email}>{adminEmail}</p>
@@ -49,6 +55,17 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+  },
+  backButton: {
+    alignSelf: "flex-start",
+    marginBottom: "1rem",
+    marginLeft: "-5rem",
+    background: "none",
+    border: "none",
+    color: "#21c6bc",
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
   },
   title: {
     fontSize: "1.8rem",

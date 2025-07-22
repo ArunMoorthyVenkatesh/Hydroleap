@@ -13,7 +13,7 @@ const AdminProfileSection = () => {
           alert('No token found. Please log in again.');
           return;
         }
-        const response = await axios.get('http://localhost:5001/api/admin/profile', {
+        const response = await axios.get('http://54.165.244.9:5001/api/admin/profile', {
           headers: { Authorization: `Bearer ${token}` }
         });
         setAdminData(response.data);

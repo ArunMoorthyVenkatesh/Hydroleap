@@ -8,7 +8,7 @@ const PendingAdminApprovalSection = () => {
   useEffect(() => {
     const fetchPendingAdmins = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/admin/pending-admins");
+        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-admins");
         setPendingAdmins(res.data);
         setError(null);
       } catch (error) {
@@ -20,7 +20,7 @@ const PendingAdminApprovalSection = () => {
 
   const handleDecision = async (adminId, decision) => {
     try {
-      await axios.post(`http://localhost:5001/api/admin/handle-admin-request`, {
+      await axios.post(`http://54.165.244.9:5001/api/admin/handle-admin-request`, {
         id: adminId,
         action: decision,
       });

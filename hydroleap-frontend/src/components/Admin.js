@@ -10,7 +10,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchPendingUsers = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/admin/pending-users");
+        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-users");
         setPendingUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch pending users", err);
@@ -21,7 +21,7 @@ const Admin = () => {
 
   const handleApprove = async (email) => {
     try {
-      await axios.post(`http://localhost:5001/api/admin/approve/${email}`);
+      await axios.post(`http://54.165.244.9:5001/api/admin/approve/${email}`);
       setPendingUsers(pendingUsers.filter((user) => user.email !== email));
       alert("User approved and notified via email.");
     } catch (err) {
@@ -32,7 +32,7 @@ const Admin = () => {
 
   const handleReject = async (email) => {
     try {
-      await axios.post(`http://localhost:5001/api/admin/reject/${email}`);
+      await axios.post(`http://54.165.244.9:5001/api/admin/reject/${email}`);
       setPendingUsers(pendingUsers.filter((user) => user.email !== email));
       alert("User rejected and notified via email.");
     } catch (err) {

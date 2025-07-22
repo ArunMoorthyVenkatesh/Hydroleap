@@ -11,7 +11,7 @@ const AdminLoginPage = () => {
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://localhost:5001/api/admin-login/login", {
+      const res = await axios.post("http://54.165.244.9:5001/api/admin-login/login", {
         email: email.trim().toLowerCase(),
         password,
       });

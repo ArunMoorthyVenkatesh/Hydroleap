@@ -1,4 +1,3 @@
-// src/components/UserProjectsPage.js
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
@@ -22,14 +21,11 @@ const UserProjectsPage = () => {
 
     const fetchProjects = async () => {
       try {
-        // Fetch assigned projects from the correct backend route
         const response = await fetch(
-          `http://localhost:5001/api/projects/project-access/user/${email}`
+          `http://54.165.244.9:5001/api/projects/project-access/user/${email}`
         );
         if (!response.ok) throw new Error("Failed to fetch assigned projects");
         const data = await response.json();
-
-        // Each item is { email, projectId, ... }
         setProjects(Array.isArray(data) ? data.map((d) => d.projectId) : []);
       } catch (err) {
         console.error(err);
@@ -44,7 +40,14 @@ const UserProjectsPage = () => {
     <div style={styles.container}>
       <Header />
       <div style={styles.content}>
+
+        {/* Back Button */}
+        <button onClick={() => navigate(-1)} style={styles.backButton}>
+          ← Back
+        </button>
+
         <h2 style={styles.title}>My Assigned Projects</h2>
+
         {error && <p style={styles.error}>{error}</p>}
         <div style={styles.grid}>
           {projects.length === 0 ? (
@@ -80,6 +83,17 @@ const styles = {
     color: "#187d69",
     textAlign: "center",
     minHeight: "100vh",
+  },
+  backButton: {
+    background: "none",
+    border: "none",
+    color: ACCENT,
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    textAlign: "left",
+    marginBottom: "1rem",
+    marginLeft: "1rem",
   },
   title: {
     fontSize: "2.5rem",

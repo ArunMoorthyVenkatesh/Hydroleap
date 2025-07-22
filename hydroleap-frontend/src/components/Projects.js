@@ -11,7 +11,7 @@ const Projects = () => {
   // Fetch all available projects once (optional)
   useEffect(() => {
     axios
-      .get("http://localhost:5001/api/iot/projects")
+      .get("http://54.165.244.9:5001/api/iot/projects")
       .then((res) => setProjects(res.data))
       .catch((err) => console.error("Failed to fetch projects", err));
   }, []);
@@ -22,7 +22,7 @@ const Projects = () => {
       const userEmail = localStorage.getItem("userEmail");
       if (userEmail) {
         axios
-          .get(`http://localhost:5001/api/projects/user/${userEmail}`)
+          .get(`http://54.165.244.9:5001/api/projects/user/${userEmail}`)
           .then((res) => {
             if (Array.isArray(res.data.projects)) {
               setAssignedProjects(res.data.projects);

@@ -18,7 +18,7 @@ const AllProjects = () => {
 
     const fetchProjects = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/project-list/all", {
+        const res = await axios.get("http://54.165.244.9:5001/api/project-list/all", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjects(res.data);

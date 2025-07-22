@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Header from "./Header"; // ✅ Ensures logo is included
 
 const ACCENT = "#21c6bc";
 
 const UserProfilePage = () => {
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5001/api/user/me", {
+        const res = await axios.get("http://54.165.244.9:5001/api/user/me", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setUser(res.data);
@@ -31,9 +33,14 @@ const UserProfilePage = () => {
   return (
     <div style={styles.container}>
       <Header />
-
       <div style={styles.overlay}>
         <div style={styles.card}>
+
+          {/* Back Button */}
+          <button onClick={() => navigate(-1)} style={styles.backButton}>
+            ← Back
+          </button>
+
           <h2 style={styles.title}>My Profile</h2>
           <div style={styles.formGroup}>
             <label style={styles.label}>Name:</label>
@@ -88,6 +95,18 @@ const styles = {
     backdropFilter: "blur(9px) saturate(180%)",
     boxShadow: "0 4px 36px #bbf2eb",
     marginTop: "1.2rem",
+    position: "relative",
+  },
+  backButton: {
+    background: "none",
+    border: "none",
+    color: ACCENT,
+    fontSize: "16px",
+    fontWeight: "bold",
+    cursor: "pointer",
+    marginBottom: "1rem",
+    padding: "0",
+    textAlign: "left",
   },
   title: {
     fontSize: "2rem",

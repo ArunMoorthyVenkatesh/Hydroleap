@@ -8,7 +8,6 @@ import { FiPower, FiDroplet, FiZap, FiThermometer } from "react-icons/fi";
 import "./IoTDashboard.css";
 import ReportSection from "./ReportSection";
 
-
 const FIELD_LABELS = {
   FIT_01: "FIT-01 (Flow 1, m³/hr)",
   FIT_02: "FIT-02 (Flow 2, m³/hr)",
@@ -31,71 +30,11 @@ const GAUGE_META = [
   { field: "Pressure", label: FIELD_LABELS.Pressure, max: 10, unit: "bar" },
 ];
 
-function HeaderBar() {
-  return (
-    <header className="dashboard-header">
-      <div className="header-left">
-        <img
-          src={require("../assets/hydroleap-logo.png")}
-          alt="Hydroleap Logo"
-          className="dashboard-logo"
-        />
-        <span className="dashboard-title">Dashboard</span>
-      </div>
-    </header>
-  );
-}
-
-function ProjectInfoBar({ projectId, deviceId }) {
-  return (
-    <div className="project-info-bar">
-      <span>
-        Project: <strong className="project-accent">{projectId}</strong>
-      </span>
-      <span>
-        Device ID: <strong>{deviceId}</strong>
-      </span>
-    </div>
-  );
-}
-
-function StatusCard({ icon, label, value, color }) {
-  return (
-    <div className="status-card">
-      <span className="status-icon">{icon}</span>
-      <div className="status-label">{label}</div>
-      <div className="status-value" style={{ color }}>{value}</div>
-    </div>
-  );
-}
-
-function AuditTrail({ history }) {
-  return (
-    <div className="audit-trail">
-      <div className="audit-title">Audit Trail</div>
-      <table>
-        <thead>
-          <tr>
-            <th>Action</th>
-            <th>Changed By</th>
-            <th>Time</th>
-            <th>Snapshot</th>
-          </tr>
-        </thead>
-        <tbody>
-          {history.map((entry, i) => (
-            <tr key={i}>
-              <td>{entry.action?.toUpperCase()}</td>
-              <td>{entry.changedBy || "unknown"}</td>
-              <td>{new Date(entry.changedAt).toLocaleString()}</td>
-              <td className="json-cell">{JSON.stringify(entry.snapshot, null, 2)}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
-}
+const systemMeta = [
+  { key: "system running", label: "System Running", icon: <FiPower />, color: "#14ba85" },
+  { key: "Pump_01", label: "Pump", icon: <FiDroplet />, color: "#24a1e0" },
+  { key: "Rectifier_01", label: "Rectifier", icon: <FiZap />, color: "#f78c2c" },
+];
 
 const realTimeFields = [
   { key: "Temperature", label: "Temperature (°C)", icon: <FiThermometer />, color: "#e07c24" },
@@ -108,214 +47,208 @@ const realTimeFields = [
   { key: "Rectifier_A", label: "Rectifier Current (A)", icon: null, color: "#e07c24" },
 ];
 
-const systemMeta = [
-  {
-    key: "system running",
-    label: "System Running",
-    icon: <FiPower />,
-    color: "#14ba85"
-  },
-  {
-    key: "Pump_01",
-    label: "Pump",
-    icon: <FiDroplet />,
-    color: "#24a1e0"
-  },
-  {
-    key: "Rectifier_01",
-    label: "Rectifier",
-    icon: <FiZap />,
-    color: "#f78c2c"
-  }
-];
-
 const ALL_HISTORIC_FIELDS = [
   ...GAUGE_META.map(meta => ({ key: meta.field, label: meta.label })),
   ...systemMeta.map(meta => ({ key: meta.key, label: meta.label })),
 ];
 
-const IoTDashboard2 = () => {
-  const { projectId } = useParams();
-  const [data, setData] = useState({});
-  const [error, setError] = useState("");
-  const [deviceId, setDeviceId] = useState("");
-  const [history, setHistory] = useState([]);
-  const [dataView, setDataView] = useState("realtime"); // "realtime" | "historic" | "audit" | "report"
-  const [subView, setSubView] = useState("numeric"); // "numeric" | "gauge"
-  const [selectedHistoric, setSelectedHistoric] = useState([]);
-  const [historicData] = useState({});
+const HeaderBar = () => {
   const navigate = useNavigate();
 
+  return (
+    <header className="dashboard-header">
+      <div className="header-left">
+        <button onClick={() => navigate(-1)} className="back-button">
+          ← Back
+        </button>
+        <img src={require("../assets/hydroleap-logo.png")} alt="Hydroleap Logo" className="dashboard-logo" />
+        <span className="dashboard-title">Dashboard</span>
+      </div>
+    </header>
+  );
+};
+
+const ProjectInfoBar = ({ projectId, deviceId }) => (
+  <div className="project-info-bar">
+    <span>Project: <strong className="project-accent">{projectId}</strong></span>
+    <span>Device ID: <strong>{deviceId}</strong></span>
+  </div>
+);
+
+const StatusCard = ({ icon, label, value, color }) => (
+  <div className="status-card">
+    <span className="status-icon">{icon}</span>
+    <div className="status-label">{label}</div>
+    <div className="status-value" style={{ color }}>{value}</div>
+  </div>
+);
+
+const AuditTrail = ({ history }) => (
+  <div className="audit-trail">
+    <div className="audit-title">Audit Trail</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Action</th>
+          <th>Changed By</th>
+          <th>Time</th>
+          <th>Snapshot</th>
+        </tr>
+      </thead>
+      <tbody>
+        {history.map((entry, i) => (
+          <tr key={i}>
+            <td>{entry.action?.toUpperCase()}</td>
+            <td>{entry.changedBy || "unknown"}</td>
+            <td>{new Date(entry.changedAt).toLocaleString()}</td>
+            <td className="json-cell">{JSON.stringify(entry.snapshot, null, 2)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
+
+const IoTDashboard2 = () => {
+  const { projectId } = useParams();
+  const navigate = useNavigate();
+  const [data, setData] = useState({});
+  const [deviceId, setDeviceId] = useState("");
+  const [error, setError] = useState("");
+  const [history, setHistory] = useState([]);
+  const [dataView, setDataView] = useState("realtime");
+  const [subView, setSubView] = useState("numeric");
+  const [selectedHistoric, setSelectedHistoric] = useState([]);
+
   useEffect(() => {
-    const token = localStorage.getItem("adminToken");
-    if (!token) {
-      alert("Access denied. Please log in as admin.");
-      navigate("/admin-login");
+    const adminToken = localStorage.getItem("adminToken");
+    const userToken = localStorage.getItem("token");
+    const adminEmail = localStorage.getItem("adminEmail");
+    const userEmail = localStorage.getItem("userEmail");
+
+    const email = adminEmail || userEmail;
+    const token = adminToken || userToken;
+
+    if (!token || !email) {
+      alert("Access denied. Please log in.");
+      navigate("/login");
       return;
     }
 
-    const getDeviceAndFetchData = async () => {
+    const checkAccess = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:5001/api/project-list/${projectId}/device`,
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
-        setDeviceId(response.data.deviceId);
-        setData(await fetchIoTData(projectId, response.data.deviceId));
+        const res = await axios.get(`http://54.165.244.9:5001/api/projects/project-access/user/${email}`);
+        const assignedProjects = res.data.map(p => p.projectId);
+
+        if (!assignedProjects.includes(projectId)) {
+          alert("Access denied. You are not assigned to this project.");
+          navigate("/login");
+          return;
+        }
+
+        await fetchAll(token);
       } catch (err) {
-        setError("Failed to load project data.");
-        setData({});
+        alert("Failed to verify access.");
+        navigate("/login");
       }
     };
 
-    const fetchHistory = async () => {
+    const fetchAll = async (token) => {
       try {
-        const res = await axios.get(`http://localhost:5001/api/history/byProjectId/${projectId}`);
+        const response = await axios.get(`http://54.165.244.9:5001/api/project-list/${projectId}/device`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setDeviceId(response.data.deviceId);
+        setData(await fetchIoTData(projectId, response.data.deviceId));
+      } catch {
+        setError("Failed to load project data.");
+        setData({});
+      }
+
+      try {
+        const res = await axios.get(`http://54.165.244.9:5001/api/history/byProjectId/${projectId}`);
         setHistory(res.data);
-      } catch (err) {}
+      } catch {}
     };
 
-    getDeviceAndFetchData();
-    fetchHistory();
-
-    const interval = setInterval(() => {
-      getDeviceAndFetchData();
-      fetchHistory();
-    }, 10000);
+    checkAccess();
+    const interval = setInterval(() => checkAccess(), 10000);
     return () => clearInterval(interval);
   }, [projectId, navigate]);
 
-  // ======== HISTORIC DATA FROM AUDIT LOG ========
-
-  // Build a time series for each field using history snapshots
   const historicDataFromHistory = {};
   ALL_HISTORIC_FIELDS.forEach(({ key }) => {
     historicDataFromHistory[key] = history
       .filter(entry => entry.snapshot && typeof entry.snapshot[key] === "number")
-      .map(entry => ({
-        time: entry.changedAt,
-        value: entry.snapshot[key]
-      }))
+      .map(entry => ({ time: entry.changedAt, value: entry.snapshot[key] }))
       .sort((a, b) => new Date(a.time) - new Date(b.time));
   });
 
-  // Only show fields with real data
   const availableHistoricFields = ALL_HISTORIC_FIELDS.filter(
     f => Array.isArray(historicDataFromHistory[f.key]) && historicDataFromHistory[f.key].length > 0
   );
 
-  // ============= REPORT VIEW =============
-
-
   return (
     <div className="dashboard-root">
       <HeaderBar />
-      <ProjectInfoBar
-        projectId={projectId}
-        deviceId={deviceId}
-      />
+      <ProjectInfoBar projectId={projectId} deviceId={deviceId} />
 
-      {/* ----- Main 4-way toggle ----- */}
       <div className="section-title-toggle-row">
         <div className="toggle-switch-row-centered">
           <div className="toggle-switch-row">
-            <button
-              className={dataView === "realtime" ? "toggle-btn active" : "toggle-btn"}
-              onClick={() => setDataView("realtime")}
-            >
-              Real Time Data
-            </button>
-            <button
-              className={dataView === "historic" ? "toggle-btn active" : "toggle-btn"}
-              onClick={() => setDataView("historic")}
-            >
-              Historic Data
-            </button>
-            <button
-              className={dataView === "audit" ? "toggle-btn active" : "toggle-btn"}
-              onClick={() => setDataView("audit")}
-            >
-              Audit Trail
-            </button>
-            <button
-              className={dataView === "report" ? "toggle-btn active" : "toggle-btn"}
-              onClick={() => setDataView("report")}
-            >
-              Report
-            </button>
+            {["realtime", "historic", "audit", "report"].map(view => (
+              <button
+                key={view}
+                className={`toggle-btn ${dataView === view ? "active" : ""}`}
+                onClick={() => setDataView(view)}
+              >
+                {view[0].toUpperCase() + view.slice(1).replace("time", " Time")}
+              </button>
+            ))}
           </div>
         </div>
         {dataView === "realtime" && (
-          <div className="toggle-switch-row-centered" style={{marginTop: 0}}>
+          <div className="toggle-switch-row-centered" style={{ marginTop: 0 }}>
             <div className="toggle-switch-row">
-              <button
-                className={subView === "numeric" ? "toggle-btn active" : "toggle-btn"}
-                onClick={() => setSubView("numeric")}
-              >
-                Numeric View
-              </button>
-              <button
-                className={subView === "gauge" ? "toggle-btn active" : "toggle-btn"}
-                onClick={() => setSubView("gauge")}
-              >
-                Gauge View
-              </button>
+              {["numeric", "gauge"].map(view => (
+                <button
+                  key={view}
+                  className={`toggle-btn ${subView === view ? "active" : ""}`}
+                  onClick={() => setSubView(view)}
+                >
+                  {view[0].toUpperCase() + view.slice(1)} View
+                </button>
+              ))}
             </div>
           </div>
         )}
       </div>
 
-      {/* ---------- Views ---------- */}
-
       {dataView === "report" && (
-  <ReportSection
-    projectId={projectId}
-    deviceId={deviceId}
-    data={data}
-    history={history}
-    historicData={historicData}
-    ALL_HISTORIC_FIELDS={ALL_HISTORIC_FIELDS}
-    systemMeta={systemMeta}
-    GAUGE_META={GAUGE_META}
-  />
-)}
-
+        <ReportSection
+          projectId={projectId}
+          deviceId={deviceId}
+          data={data}
+          history={history}
+          historicData={historicDataFromHistory}
+          ALL_HISTORIC_FIELDS={ALL_HISTORIC_FIELDS}
+          systemMeta={systemMeta}
+          GAUGE_META={GAUGE_META}
+        />
+      )}
 
       {dataView === "realtime" && (
         subView === "numeric" ? (
           <div className="status-cards-row" style={{ flexWrap: "wrap" }}>
-            {systemMeta
+            {[...systemMeta, ...realTimeFields]
               .filter(meta => data[meta.key] !== undefined && data[meta.key] !== null)
               .map(meta => (
                 <StatusCard
                   key={meta.key}
                   icon={meta.icon}
                   label={meta.label}
-                  value={
-                    typeof data[meta.key] === "boolean"
-                      ? data[meta.key]
-                        ? "ON"
-                        : "OFF"
-                      : "N/A"
-                  }
-                  color={
-                    typeof data[meta.key] === "boolean"
-                      ? data[meta.key]
-                        ? meta.color
-                        : "#ef233c"
-                      : "#8e99ad"
-                  }
-                />
-              ))}
-            {realTimeFields
-              .filter(meta => data[meta.key] !== undefined && data[meta.key] !== null && data[meta.key] !== "N/A")
-              .map(meta => (
-                <StatusCard
-                  key={meta.key}
-                  icon={meta.icon}
-                  label={meta.label}
-                  value={typeof data[meta.key] === "number" ? data[meta.key] : data[meta.key]}
-                  color={meta.color}
+                  value={typeof data[meta.key] === "boolean" ? (data[meta.key] ? "ON" : "OFF") : data[meta.key]}
+                  color={typeof data[meta.key] === "boolean" ? (data[meta.key] ? meta.color : "#ef233c") : meta.color}
                 />
               ))}
           </div>
@@ -325,23 +258,11 @@ const IoTDashboard2 = () => {
               {systemMeta
                 .filter(meta => typeof data[meta.key] === "boolean")
                 .map(meta => (
-                  <div
-                    key={meta.key}
-                    className="status-card"
-                    style={{
-                      borderBottom: `4px solid ${data[meta.key] ? "#14ba85" : "#ef233c"}`,
-                    }}
-                  >
+                  <div key={meta.key} className="status-card" style={{ borderBottom: `4px solid ${data[meta.key] ? "#14ba85" : "#ef233c"}` }}>
                     <span className="status-icon">{meta.icon}</span>
                     <div className="status-label">{meta.label}</div>
                     <div className="status-indicator-wrapper">
-                      <span
-                        className={
-                          "status-indicator " +
-                          (data[meta.key] ? "on-circle" : "off-circle")
-                        }
-                        title={data[meta.key] ? "ON" : "OFF"}
-                      ></span>
+                      <span className={`status-indicator ${data[meta.key] ? "on-circle" : "off-circle"}`} title={data[meta.key] ? "ON" : "OFF"} />
                     </div>
                   </div>
                 ))}
@@ -351,12 +272,7 @@ const IoTDashboard2 = () => {
                 .filter(meta => typeof data[meta.field] === "number")
                 .map(meta => (
                   <div key={meta.field} style={{ textAlign: "center" }}>
-                    <GaugeDisplay
-                      label={meta.label}
-                      value={data[meta.field]}
-                      maxValue={meta.max}
-                      unit={meta.unit}
-                    />
+                    <GaugeDisplay label={meta.label} value={data[meta.field]} maxValue={meta.max} unit={meta.unit} />
                   </div>
                 ))}
             </div>
@@ -364,48 +280,36 @@ const IoTDashboard2 = () => {
         )
       )}
 
-      {/* Historic Data: only show fields with data */}
       {dataView === "historic" && (
         <div className="historic-wrapper">
-<div className="historic-controls">
-  <div style={{ marginBottom: 4 }}>
-    <label className="pretty-checkbox" style={{ fontWeight: 600, color: "#0d5751" }}>
-      <input
-        type="checkbox"
-        checked={selectedHistoric.length === availableHistoricFields.length}
-        onChange={() => {
-          if (selectedHistoric.length === availableHistoricFields.length) {
-            setSelectedHistoric([]);
-          } else {
-            setSelectedHistoric(availableHistoricFields.map(f => f.key));
-          }
-        }}
-      />
-      <span className="custom-check" />
-      View All
-    </label>
-  </div>
-  <div className="historic-checkboxes">
-    {availableHistoricFields.map(f => (
-      <label key={f.key} className="pretty-checkbox historic-checkbox-label">
-        <input
-          type="checkbox"
-          checked={selectedHistoric.includes(f.key)}
-          onChange={() =>
-            setSelectedHistoric(sel =>
-              sel.includes(f.key)
-                ? sel.filter(k => k !== f.key)
-                : [...sel, f.key]
-            )
-          }
-        />
-        <span className="custom-check" />
-        {f.label}
-      </label>
-    ))}
-  </div>
-</div>
-
+          <div className="historic-controls">
+            <label className="pretty-checkbox" style={{ fontWeight: 600, color: "#0d5751" }}>
+              <input
+                type="checkbox"
+                checked={selectedHistoric.length === availableHistoricFields.length}
+                onChange={() => setSelectedHistoric(
+                  selectedHistoric.length === availableHistoricFields.length ? [] : availableHistoricFields.map(f => f.key)
+                )}
+              />
+              <span className="custom-check" /> View All
+            </label>
+            <div className="historic-checkboxes">
+              {availableHistoricFields.map(f => (
+                <label key={f.key} className="pretty-checkbox historic-checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={selectedHistoric.includes(f.key)}
+                    onChange={() =>
+                      setSelectedHistoric(prev =>
+                        prev.includes(f.key) ? prev.filter(k => k !== f.key) : [...prev, f.key]
+                      )
+                    }
+                  />
+                  <span className="custom-check" /> {f.label}
+                </label>
+              ))}
+            </div>
+          </div>
 
           <div className="historic-graphs-grid">
             {selectedHistoric.length === 0 && (
@@ -413,25 +317,15 @@ const IoTDashboard2 = () => {
                 <em>Select data to view graphs.</em>
               </div>
             )}
-            {selectedHistoric
-              .filter(key =>
-                Array.isArray(historicDataFromHistory[key]) && historicDataFromHistory[key].length > 0
-              )
-              .map(key => {
-                const label =
-                  availableHistoricFields.find(f => f.key === key)?.label || key;
-                const color = "#0088FE";
-                const points = historicDataFromHistory[key];
-                return (
-                  <div key={key} className="historic-graph-card">
-                    <GraphWithTimeFilter
-                      data={points}
-                      label={label}
-                      color={color}
-                    />
-                  </div>
-                );
-              })}
+            {selectedHistoric.map(key => {
+              const label = availableHistoricFields.find(f => f.key === key)?.label || key;
+              const points = historicDataFromHistory[key];
+              return (
+                <div key={key} className="historic-graph-card">
+                  <GraphWithTimeFilter data={points} label={label} color="#0088FE" />
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

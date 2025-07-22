@@ -52,7 +52,7 @@ export default function AdminDashboard() {
   const fetchAdmins = async () => {
     setLoadingAdmins(true);
     try {
-      const res = await axios.get("http://localhost:5001/api/admin/list-admins");
+      const res = await axios.get("http://54.165.244.9:5001/api/admin/list-admins");
       setAdmins(res.data);
       setErrorAdmins("");
     } catch {
@@ -65,7 +65,7 @@ export default function AdminDashboard() {
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      const res = await axios.get("http://localhost:5001/api/admin/list-users");
+      const res = await axios.get("http://54.165.244.9:5001/api/admin/list-users");
       setUsers(res.data);
       setErrorUsers("");
     } catch {

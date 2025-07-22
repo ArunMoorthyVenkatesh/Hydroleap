@@ -23,7 +23,7 @@ const ProjectAccessPage = () => {
     }
     setLoadingProjects(true);
     axios
-      .get("http://localhost:5001/api/project-list/all", {
+      .get("http://54.165.244.9:5001/api/project-list/all", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -46,7 +46,7 @@ const ProjectAccessPage = () => {
     setLoadingAccessList(true);
     axios
       .get(
-        `http://localhost:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
+        `http://54.165.244.9:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
       )
       .then((res) => {
         setAccessList(res.data);
@@ -68,7 +68,7 @@ const ProjectAccessPage = () => {
     setGranting(true);
     setMessage("");
     try {
-      await axios.post("http://localhost:5001/api/projects/project-access/assign", {
+      await axios.post("http://54.165.244.9:5001/api/projects/project-access/assign", {
         email: trimmedEmail,
         projectId: selectedProject,
       });
@@ -76,7 +76,7 @@ const ProjectAccessPage = () => {
       setEmail("");
       // Refresh access list
       const accessRes = await axios.get(
-        `http://localhost:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
+        `http://54.165.244.9:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
       );
       setAccessList(accessRes.data);
     } catch (error) {

@@ -8,7 +8,9 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com"
+    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com",
+    "http://hydroleap-web-frontend.s3-website-us-east-1.amazonaws.com",
+    "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com"
   ],
   credentials: true,
 }));

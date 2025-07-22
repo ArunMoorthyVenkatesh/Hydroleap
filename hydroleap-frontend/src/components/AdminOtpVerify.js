@@ -9,7 +9,7 @@ const AdminOtpVerify = () => {
   const handleVerifyOtp = async () => {
     const email = localStorage.getItem("adminEmail");
     try {
-      await axios.post("http://localhost:5001/api/admin-otp/verify", { email, otp });
+      await axios.post("http://54.165.244.9:5001/api/admin-otp/verify", { email, otp });
       navigate("/admin");
     } catch (err) {
       alert("Invalid OTP or verification failed.");

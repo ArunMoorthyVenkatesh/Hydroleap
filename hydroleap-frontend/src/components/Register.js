@@ -60,7 +60,7 @@ const Register = () => {
 
   const checkEmailExists = async (email) => {
     try {
-      const res = await axios.get(`http://localhost:5001/api/check/check-email/${email}`);
+      const res = await axios.get(`http://54.165.244.9:5001/api/check/check-email/${email}`);
       return res.data.exists;
     } catch (err) {
       console.error("Email check failed", err);
@@ -87,7 +87,7 @@ const Register = () => {
     }
 
     try {
-      await axios.post("http://localhost:5001/api/otp/send", {
+      await axios.post("http://54.165.244.9:5001/api/otp/send", {
         email,
       });
       alert("OTP sent to your email.");
@@ -104,12 +104,12 @@ const Register = () => {
     }
 
     try {
-      await axios.post("http://localhost:5001/api/otp/verify", {
+      await axios.post("http://54.165.244.9:5001/api/otp/verify", {
         email: form.email.trim().toLowerCase(),
         otp: form.otp.toString().trim(),
       });
 
-      const res = await axios.post("http://localhost:5001/api/auth/request-signup", {
+      const res = await axios.post("http://54.165.244.9:5001/api/auth/request-signup", {
         ...form,
         email: form.email.trim().toLowerCase(),
         role,
@@ -171,7 +171,7 @@ const Register = () => {
               {errors.phone && <span style={styles.error}>{errors.phone}</span>}
 
               <div style={styles.genderGroup}>
-                {["Male", "Female", "Other"].map((option) => (
+                {["Male", "Female"].map((option) => (
                   <button
                     key={option}
                     type="button"

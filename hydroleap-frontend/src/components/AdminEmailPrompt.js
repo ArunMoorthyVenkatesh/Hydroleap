@@ -9,7 +9,7 @@ const AdminEmailPrompt = () => {
 
   const handleSendOtp = async () => {
     try {
-      await axios.post("http://localhost:5001/api/admin-otp/send", { email });
+      await axios.post("http://54.165.244.9:5001/api/admin-otp/send", { email });
       localStorage.setItem("adminEmail", email);
       navigate("/verify-admin-otp");
     } catch (err) {

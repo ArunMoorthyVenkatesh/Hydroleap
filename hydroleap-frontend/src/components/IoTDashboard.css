@@ -281,3 +281,8 @@ body, .dashboard-root {
     grid-template-columns: 1fr;
   }
 }
+
+.back-button:hover {
+  text-decoration: underline;
+}
+

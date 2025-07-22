@@ -85,3 +85,18 @@
   .project-grid { padding: 0 0.2rem; gap: 1rem; }
   .dashboard-title { font-size: 1.2rem; }
 }
+
+.back-button {
+  background: none;
+  border: none;
+  color: #21c6bc;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 16px 0 8px 8px;
+  padding: 4px 8px;
+}
+
+.back-button:hover {
+  text-decoration: underline;
+}

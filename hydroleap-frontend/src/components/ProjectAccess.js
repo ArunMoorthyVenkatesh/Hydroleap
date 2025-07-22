@@ -22,7 +22,7 @@ const ProjectAccess = () => {
 
   const fetchProjects = async (token) => {
     try {
-      const res = await axios.get("http://localhost:5001/api/projects", {
+      const res = await axios.get("http://54.165.244.9:5001/api/projects", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(res.data);
@@ -47,7 +47,7 @@ const ProjectAccess = () => {
     }
 
     try {
-      const res = await axios.post("http://localhost:5001/api/projects/grant-access", {
+      const res = await axios.post("http://54.165.244.9:5001/api/projects/grant-access", {
         projectId: selectedProject.projectId, // ✅ fixed
         email: trimmedEmail,
       });

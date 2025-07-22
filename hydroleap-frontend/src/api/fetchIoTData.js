@@ -5,7 +5,7 @@ export const   = async (projectId, deviceId) => {
     const token = localStorage.getItem("adminToken");
 
     const response = await axios.get(
-      `http://localhost:5001/api/iot/${projectId}/${deviceId}`,
+      `http://54.165.244.9:5001/api/iot/${projectId}/${deviceId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
