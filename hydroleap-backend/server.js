@@ -8,9 +8,7 @@ const app = express();
 app.use(cors({
   origin: [
     "http://localhost:3000",
-    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com",
-    "http://hydroleap-web-frontend.s3-website-us-east-1.amazonaws.com",
-    "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com"
+    "http://hydroleap-iot-dashboard.s3-website-us-east-1.amazonaws.com"
   ],
   credentials: true,
 }));
@@ -20,6 +18,7 @@ app.use(express.json()); // Parse incoming JSON
 // --- Route Imports ---
 const otpRoutes = require("./routes/otp");
 const authRoutes = require("./routes/auth");
+
 const notesRoutes = require("./routes/notes");
 const adminRoutes = require("./routes/admin");
 const adminRegisterRoutes = require("./routes/adminRegister");
@@ -97,7 +96,7 @@ mongoose
   .catch((err) => console.warn("❌ MongoDB connection failed:", err.message));
 
 // --- Start Server ---
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
