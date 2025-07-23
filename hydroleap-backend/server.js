@@ -20,6 +20,7 @@ app.use(cors({
 
 // Log incoming requests to track CORS errors
 app.use((req, res, next) => {
+  // Comment out in production to avoid exposing any sensitive information
   console.log(`Received request from ${req.get('Origin')}`);
   next();
 });
@@ -99,7 +100,7 @@ app.get("/", (req, res) => {
 });
 
 // --- MongoDB Connection ---
-console.log("MongoDB URI:", process.env.MONGO_URI);  // Debug log to check MongoDB URI
+console.log("MongoDB URI:", process.env.MONGO_URI);  // Debug log to check MongoDB URI, REMOVE BEFORE PRODUCTION
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -119,3 +120,8 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
+// --- Error Handling Middleware ---
+app.use((err, req, res, next) => {
+  console.error("Error occurred:", err);
+  res.status(500).send("Internal Server Error");
+});
