@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AdminProfileSection = () => {
   const [adminData, setAdminData] = useState(null);
@@ -13,9 +14,10 @@ const AdminProfileSection = () => {
           alert('No token found. Please log in again.');
           return;
         }
-        const response = await axios.get('http://54.165.244.9:5001/api/admin/profile', {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+const response = await axios.get(`${API_BASE}/admin/profile`, {
+  headers: { Authorization: `Bearer ${token}` }
+});
+
         setAdminData(response.data);
       } catch (error) {
         setAdminData(null);

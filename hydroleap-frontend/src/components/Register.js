@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -60,7 +61,7 @@ const Register = () => {
 
   const checkEmailExists = async (email) => {
     try {
-      const res = await axios.get(`http://54.165.244.9:5001/api/check/check-email/${email}`);
+      const res = await axios.get(`${API_BASE}/check/check-email/${email}`);
       return res.data.exists;
     } catch (err) {
       console.error("Email check failed", err);
@@ -80,14 +81,14 @@ const Register = () => {
       setErrors((prev) => ({
         ...prev,
         email: role === "admin"
-          ? "email already exists or is pending approval."
-          : "email already exists or is pending approval.",
+          ? "Email already exists or is pending approval."
+          : "Email already exists or is pending approval.",
       }));
       return;
     }
 
     try {
-      await axios.post("http://54.165.244.9:5001/api/otp/send", {
+      await axios.post(`${API_BASE}/otp/send`, {
         email,
       });
       alert("OTP sent to your email.");
@@ -104,12 +105,12 @@ const Register = () => {
     }
 
     try {
-      await axios.post("http://54.165.244.9:5001/api/otp/verify", {
+      await axios.post(`${API_BASE}/otp/verify`, {
         email: form.email.trim().toLowerCase(),
         otp: form.otp.toString().trim(),
       });
 
-      const res = await axios.post("http://54.165.244.9:5001/api/auth/request-signup", {
+      const res = await axios.post(`${API_BASE}/auth/request-signup`, {
         ...form,
         email: form.email.trim().toLowerCase(),
         role,
@@ -124,7 +125,6 @@ const Register = () => {
 
   return (
     <div style={styles.wrapper}>
-
       <div style={styles.overlay}>
         <Header />
         <div style={styles.centerWrapper}>

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const ProjectAccessPage = () => {
   const [projects, setProjects] = useState([]);
@@ -23,7 +24,7 @@ const ProjectAccessPage = () => {
     }
     setLoadingProjects(true);
     axios
-      .get("http://54.165.244.9:5001/api/project-list/all", {
+      .get(`${API_BASE}/project-list/all`, {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -45,9 +46,7 @@ const ProjectAccessPage = () => {
     }
     setLoadingAccessList(true);
     axios
-      .get(
-        `http://54.165.244.9:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
-      )
+      .get(`${API_BASE}/projects/project-access/list/${encodeURIComponent(selectedProject)}`)
       .then((res) => {
         setAccessList(res.data);
         setLoadingAccessList(false);
@@ -58,7 +57,6 @@ const ProjectAccessPage = () => {
       });
   }, [selectedProject]);
 
-  // Grant access (use correct endpoint)
   const handleGrantAccess = async () => {
     const trimmedEmail = email.trim().toLowerCase();
     if (!trimmedEmail || !selectedProject) {
@@ -68,15 +66,15 @@ const ProjectAccessPage = () => {
     setGranting(true);
     setMessage("");
     try {
-      await axios.post("http://54.165.244.9:5001/api/projects/project-access/assign", {
+      await axios.post(`${API_BASE}/projects/project-access/assign`, {
         email: trimmedEmail,
         projectId: selectedProject,
       });
       setMessage(`✅ Access granted to ${trimmedEmail}`);
       setEmail("");
-      // Refresh access list
+
       const accessRes = await axios.get(
-        `http://54.165.244.9:5001/api/projects/project-access/list/${encodeURIComponent(selectedProject)}`
+        `${API_BASE}/projects/project-access/list/${encodeURIComponent(selectedProject)}`
       );
       setAccessList(accessRes.data);
     } catch (error) {
@@ -86,14 +84,13 @@ const ProjectAccessPage = () => {
     setGranting(false);
   };
 
-  // Project filter
   const filteredProjects = projects.filter((p) =>
     p.projectId?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div style={styles.mainPanel}>
-      {/* LEFT: Projects */}
+      {/* LEFT PANEL */}
       <div style={styles.leftPanel}>
         <input
           type="text"
@@ -129,7 +126,6 @@ const ProjectAccessPage = () => {
                       : project.projectId
                   )
                 }
-                tabIndex={0}
               >
                 <div>
                   <h3 style={styles.cardTitle}>{project.projectId}</h3>
@@ -153,7 +149,8 @@ const ProjectAccessPage = () => {
           )}
         </div>
       </div>
-      {/* RIGHT: Access control */}
+
+      {/* RIGHT PANEL */}
       <div style={styles.accessPanel}>
         {selectedProject ? (
           <>

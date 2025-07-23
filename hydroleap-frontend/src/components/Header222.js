@@ -1,6 +1,7 @@
 // src/components/Header222.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const Header = () => {
   const [admin, setAdmin] = useState(null);
@@ -11,7 +12,7 @@ const Header = () => {
         const token = localStorage.getItem("adminToken");
         if (!token) return;
 
-        const res = await axios.get("http://54.165.244.9:5001/api/admin/profile", {
+        const res = await axios.get("${API_BASE}/admin/profile", {
           headers: {
             Authorization: `Bearer ${token}`,
           },

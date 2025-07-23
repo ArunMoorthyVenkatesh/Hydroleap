@@ -2,13 +2,16 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "./Header";
 
+// ✅ Use base API from .env or fallback to localhost
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+
 const AddAdmin = () => {
   const [pendingAdmins, setPendingAdmins] = useState([]);
 
   useEffect(() => {
     const fetchPendingAdmins = async () => {
       try {
-        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-admins");
+        const res = await axios.get(`${API_BASE}/admin/pending-admins`);
         setPendingAdmins(res.data);
       } catch (err) {
         console.error(err);
@@ -21,7 +24,7 @@ const AddAdmin = () => {
 
   const handleAction = async (id, action) => {
     try {
-      const res = await axios.post(`http://54.165.244.9:5001/api/admin/${action}-admin/${id}`);
+      const res = await axios.post(`${API_BASE}/admin/${action}-admin/${id}`);
       alert(res.data.message || "✅ Action successful.");
       setPendingAdmins((prev) => prev.filter((admin) => admin._id !== id));
     } catch (err) {

@@ -1,9 +1,18 @@
 import axios from "axios";
 
+// ✅ Use .env value or fallback to localhost
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+
 export const fetchIoTData = async (projectId, deviceId) => {
   const encodedDeviceId = encodeURIComponent(deviceId);
-  const response = await axios.get(
-    `http://54.165.244.9:5001/api/iot/${projectId}/${encodedDeviceId}`
-  );
-  return response.data;
+
+  try {
+    const response = await axios.get(
+      `${API_BASE}/iot/${projectId}/${encodedDeviceId}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("❌ Failed to fetch IoT data:", error);
+    throw new Error("IoT fetch failed");
+  }
 };

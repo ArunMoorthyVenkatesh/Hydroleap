@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AdminOtpVerify = () => {
   const [otp, setOtp] = useState("");
@@ -9,7 +10,7 @@ const AdminOtpVerify = () => {
   const handleVerifyOtp = async () => {
     const email = localStorage.getItem("adminEmail");
     try {
-      await axios.post("http://54.165.244.9:5001/api/admin-otp/verify", { email, otp });
+      await axios.post("${API_BASE}/admin-otp/verify", { email, otp });
       navigate("/admin");
     } catch (err) {
       alert("Invalid OTP or verification failed.");

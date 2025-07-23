@@ -1,6 +1,7 @@
 // src/components/LoggedInInfo.js
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const LoggedInInfo = () => {
   const [info, setInfo] = useState(null);
@@ -10,8 +11,8 @@ const LoggedInInfo = () => {
     const fetchInfo = async () => {
       try {
         const endpoint = localStorage.getItem("adminToken")
-          ? "http://54.165.244.9:5001/api/admin/me"
-          : "http://54.165.244.9:5001/api/user/me";
+          ? "${API_BASE}/admin/me"
+          : "${API_BASE}/user/me";
 
         const res = await axios.get(endpoint, {
           headers: { Authorization: `Bearer ${token}` },

@@ -12,6 +12,7 @@ import PendingAdminApproval from './PendingAdminApproval';
 import AllProjects from './AllProjects';
 import ProjectAccessPage from './ProjectAccessPage';
 import hydroleapLogo from "../assets/hydroleap-logo.png"; 
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const SIDEBAR_ITEMS = [
   { key: "profile", icon: <FiUsers />, label: "Admin Profile" },
@@ -52,7 +53,7 @@ export default function AdminDashboard() {
   const fetchAdmins = async () => {
     setLoadingAdmins(true);
     try {
-      const res = await axios.get("http://54.165.244.9:5001/api/admin/list-admins");
+const res = await axios.get(`${API_BASE}/admin/list-admins`);
       setAdmins(res.data);
       setErrorAdmins("");
     } catch {
@@ -65,7 +66,7 @@ export default function AdminDashboard() {
   const fetchUsers = async () => {
     setLoadingUsers(true);
     try {
-      const res = await axios.get("http://54.165.244.9:5001/api/admin/list-users");
+const res = await axios.get(`${API_BASE}/admin/list-users`);
       setUsers(res.data);
       setErrorUsers("");
     } catch {

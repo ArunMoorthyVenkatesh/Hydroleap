@@ -96,4 +96,22 @@
     .dashboard-root { flex-direction: column; }
     .sidebar, .sidebar.collapsed { width: 100vw; min-height: auto; flex-direction: row; }
   }
+
+  /* Email in the top-right corner of the page */
+.user-info-bar {
+  position: absolute;
+  top: 24px; /* Adjust the distance from the top */
+  right: 24px; /* Adjust the distance from the right */
+  font-family: "Times New Roman", serif;
+  color: #11786e;
+  font-size: 1rem;  /* Adjust the font size as needed */
+  font-weight: 600;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.user-email {
+  padding-left: 20px;  /* Optional: adds space between email and the right edge */
+}
+
   

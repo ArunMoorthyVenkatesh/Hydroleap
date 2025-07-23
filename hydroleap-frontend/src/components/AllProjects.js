@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "./AllProjects.css"; // keep your styles!
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AllProjects = () => {
   const [projects, setProjects] = useState([]);
@@ -18,7 +19,7 @@ const AllProjects = () => {
 
     const fetchProjects = async () => {
       try {
-        const res = await axios.get("http://54.165.244.9:5001/api/project-list/all", {
+const res = await axios.get(`${API_BASE}/project-list/all`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setProjects(res.data);

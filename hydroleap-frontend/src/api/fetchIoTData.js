@@ -1,11 +1,14 @@
 import axios from "axios";
 
-export const   = async (projectId, deviceId) => {
+// ✅ Replace with your actual .env variable or fallback
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+
+export const fetchIoTData = async (projectId, deviceId) => {
   try {
     const token = localStorage.getItem("adminToken");
 
     const response = await axios.get(
-      `http://54.165.244.9:5001/api/iot/${projectId}/${deviceId}`,
+      `${API_BASE}/iot/${projectId}/${deviceId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

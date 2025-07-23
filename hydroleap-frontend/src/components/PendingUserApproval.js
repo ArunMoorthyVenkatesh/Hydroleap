@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const PendingUserApprovalSection = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
@@ -8,7 +9,7 @@ const PendingUserApprovalSection = () => {
   useEffect(() => {
     const fetchPendingUsers = async () => {
       try {
-        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-users");
+const res = await axios.get(`${API_BASE}/admin/pending-users`);
         setPendingUsers(res.data);
         setError(null);
       } catch (err) {
@@ -20,7 +21,7 @@ const PendingUserApprovalSection = () => {
 
   const handleApprove = async (userId) => {
     try {
-      await axios.post(`http://54.165.244.9:5001/api/admin/approve-user/${userId}`);
+      await axios.post(`${API_BASE}/admin/approve-user/${userId}`);
       setPendingUsers((prev) => prev.filter((u) => u._id !== userId));
       alert("✅ User approved and added to active users.");
     } catch (err) {
@@ -30,7 +31,7 @@ const PendingUserApprovalSection = () => {
 
   const handleReject = async (userId) => {
     try {
-      await axios.post(`http://54.165.244.9:5001/api/admin/reject-user/${userId}`);
+      await axios.post(`${API_BASE}/admin/reject-user/${userId}`);
       setPendingUsers((prev) => prev.filter((u) => u._id !== userId));
       alert("❌ User rejected and removed from pending list.");
     } catch (err) {

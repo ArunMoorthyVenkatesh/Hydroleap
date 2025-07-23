@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const ACCENT = "#21c6bc";
 
@@ -8,10 +9,12 @@ const UserProjectsPage = () => {
   const navigate = useNavigate();
   const [projects, setProjects] = useState([]);
   const [error, setError] = useState("");
+  const [userInfo, setUserInfo] = useState({ name: "", email: "" });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
     const email = localStorage.getItem("userEmail");
+    const name = localStorage.getItem("userName");
 
     if (!token || !email) {
       alert("Please log in.");
@@ -19,10 +22,12 @@ const UserProjectsPage = () => {
       return;
     }
 
+    setUserInfo({email });
+
     const fetchProjects = async () => {
       try {
         const response = await fetch(
-          `http://54.165.244.9:5001/api/projects/project-access/user/${email}`
+          `${API_BASE}/projects/project-access/user/${email}`
         );
         if (!response.ok) throw new Error("Failed to fetch assigned projects");
         const data = await response.json();
@@ -39,9 +44,14 @@ const UserProjectsPage = () => {
   return (
     <div style={styles.container}>
       <Header />
-      <div style={styles.content}>
 
-        {/* Back Button */}
+      {/* Top-Right Name and Email */}
+      <div style={styles.userInfo}>
+        <p style={styles.name}>{userInfo.name}</p>
+        <p style={styles.email}>{userInfo.email}</p>
+      </div>
+
+      <div style={styles.content}>
         <button onClick={() => navigate(-1)} style={styles.backButton}>
           ← Back
         </button>
@@ -77,6 +87,25 @@ const styles = {
     background: "linear-gradient(135deg, #e6fcfa 0%, #fafdff 100%)",
     fontFamily: "'Times New Roman', serif",
     overflow: "hidden",
+    position: "relative",
+  },
+  userInfo: {
+    position: "absolute",
+    top: "1rem",
+    right: "1.5rem",
+    zIndex: 1000,
+    color: "#11786e",
+    fontSize: "0.92rem",
+    textAlign: "right",
+  },
+  name: {
+    fontWeight: "700",
+    marginBottom: "0.2rem",
+    fontSize: "1.05rem",
+  },
+  email: {
+    fontWeight: "500",
+    fontSize: "0.95rem",
   },
   content: {
     padding: "3rem 2rem",

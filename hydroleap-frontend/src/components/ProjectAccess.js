@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+
 const ProjectAccess = () => {
   const [projects, setProjects] = useState([]);
   const [selectedProject, setSelectedProject] = useState(null);
@@ -22,7 +24,7 @@ const ProjectAccess = () => {
 
   const fetchProjects = async (token) => {
     try {
-      const res = await axios.get("http://54.165.244.9:5001/api/projects", {
+      const res = await axios.get(`${API_BASE}/projects`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setProjects(res.data);
@@ -47,8 +49,8 @@ const ProjectAccess = () => {
     }
 
     try {
-      const res = await axios.post("http://54.165.244.9:5001/api/projects/grant-access", {
-        projectId: selectedProject.projectId, // ✅ fixed
+      const res = await axios.post(`${API_BASE}/projects/grant-access`, {
+        projectId: selectedProject.projectId,
         email: trimmedEmail,
       });
 
@@ -57,7 +59,8 @@ const ProjectAccess = () => {
       setEmail("");
     } catch (err) {
       const errorMsg =
-        err.response?.data?.message || "Something went wrong while granting access.";
+        err.response?.data?.message ||
+        "Something went wrong while granting access.";
       setMessage(errorMsg);
       setMessageType("error");
     }
@@ -65,8 +68,6 @@ const ProjectAccess = () => {
 
   return (
     <div style={styles.container}>
-
-
       <div style={styles.content}>
         <Header />
         <h2 style={styles.title}>Project Access</h2>
@@ -77,9 +78,10 @@ const ProjectAccess = () => {
               key={project._id}
               style={{
                 ...styles.card,
-                border: selectedProject?._id === project._id
-                  ? "2px solid #fff"
-                  : "1px solid rgba(255, 255, 255, 0.3)",
+                border:
+                  selectedProject?._id === project._id
+                    ? "2px solid #fff"
+                    : "1px solid rgba(255, 255, 255, 0.3)",
                 backgroundColor:
                   selectedProject?._id === project._id
                     ? "rgba(255,255,255,0.15)"
@@ -94,7 +96,10 @@ const ProjectAccess = () => {
 
         {selectedProject && (
           <div style={styles.accessPanel}>
-            <h3>Grant Access to: {selectedProject.name || selectedProject.projectId}</h3>
+            <h3>
+              Grant Access to:{" "}
+              {selectedProject.name || selectedProject.projectId}
+            </h3>
             <input
               type="email"
               placeholder="Enter user email"
@@ -121,7 +126,6 @@ const ProjectAccess = () => {
     </div>
   );
 };
-
 const styles = {
   container: {
     position: "relative",

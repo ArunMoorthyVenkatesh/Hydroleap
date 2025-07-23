@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AdminEmailPrompt = () => {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ const AdminEmailPrompt = () => {
 
   const handleSendOtp = async () => {
     try {
-      await axios.post("http://54.165.244.9:5001/api/admin-otp/send", { email });
+      await axios.post("${API_BASE}/admin-otp/send", { email });
       localStorage.setItem("adminEmail", email);
       navigate("/verify-admin-otp");
     } catch (err) {

@@ -4,7 +4,7 @@ import { fetchIoTData } from "../api/iotApi";
 import axios from "axios";
 import GaugeDisplay from "./GaugeDisplay";
 import GraphWithTimeFilter from "./GraphWithTimeFilter";
-import { FiPower, FiDroplet, FiZap, FiThermometer } from "react-icons/fi";
+import { FiPower, FiDroplet, FiZap, FiThermometer, FiHome } from "react-icons/fi";
 import "./IoTDashboard.css";
 import ReportSection from "./ReportSection";
 
@@ -54,13 +54,10 @@ const ALL_HISTORIC_FIELDS = [
 
 const HeaderBar = () => {
   const navigate = useNavigate();
-
   return (
     <header className="dashboard-header">
       <div className="header-left">
-        <button onClick={() => navigate(-1)} className="back-button">
-          ← Back
-        </button>
+        <button onClick={() => navigate(-1)} className="back-button">← Back</button>
         <img src={require("../assets/hydroleap-logo.png")} alt="Hydroleap Logo" className="dashboard-logo" />
         <span className="dashboard-title">Dashboard</span>
       </div>
@@ -111,7 +108,6 @@ const AuditTrail = ({ history }) => (
 
 const IoTDashboard2 = () => {
   const { projectId } = useParams();
-  const navigate = useNavigate();
   const [data, setData] = useState({});
   const [deviceId, setDeviceId] = useState("");
   const [error, setError] = useState("");
@@ -121,60 +117,26 @@ const IoTDashboard2 = () => {
   const [selectedHistoric, setSelectedHistoric] = useState([]);
 
   useEffect(() => {
-    const adminToken = localStorage.getItem("adminToken");
-    const userToken = localStorage.getItem("token");
-    const adminEmail = localStorage.getItem("adminEmail");
-    const userEmail = localStorage.getItem("userEmail");
-
-    const email = adminEmail || userEmail;
-    const token = adminToken || userToken;
-
-    if (!token || !email) {
-      alert("Access denied. Please log in.");
-      navigate("/login");
-      return;
-    }
-
-    const checkAccess = async () => {
+    const fetchAll = async () => {
       try {
-        const res = await axios.get(`http://54.165.244.9:5001/api/projects/project-access/user/${email}`);
-        const assignedProjects = res.data.map(p => p.projectId);
-
-        if (!assignedProjects.includes(projectId)) {
-          alert("Access denied. You are not assigned to this project.");
-          navigate("/login");
-          return;
-        }
-
-        await fetchAll(token);
-      } catch (err) {
-        alert("Failed to verify access.");
-        navigate("/login");
-      }
-    };
-
-    const fetchAll = async (token) => {
-      try {
-        const response = await axios.get(`http://54.165.244.9:5001/api/project-list/${projectId}/device`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
-        setDeviceId(response.data.deviceId);
-        setData(await fetchIoTData(projectId, response.data.deviceId));
+        const res1 = await axios.get(`http://localhost:5001/api/project-list/${projectId}/device`);
+        setDeviceId(res1.data.deviceId);
+        setData(await fetchIoTData(projectId, res1.data.deviceId));
       } catch {
         setError("Failed to load project data.");
         setData({});
       }
 
       try {
-        const res = await axios.get(`http://54.165.244.9:5001/api/history/byProjectId/${projectId}`);
-        setHistory(res.data);
+        const res2 = await axios.get(`http://localhost:5001/api/history/byProjectId/${projectId}`);
+        setHistory(res2.data);
       } catch {}
     };
 
-    checkAccess();
-    const interval = setInterval(() => checkAccess(), 10000);
+    fetchAll();
+    const interval = setInterval(() => fetchAll(), 10000);
     return () => clearInterval(interval);
-  }, [projectId, navigate]);
+  }, [projectId]);
 
   const historicDataFromHistory = {};
   ALL_HISTORIC_FIELDS.forEach(({ key }) => {
@@ -196,6 +158,9 @@ const IoTDashboard2 = () => {
       <div className="section-title-toggle-row">
         <div className="toggle-switch-row-centered">
           <div className="toggle-switch-row">
+            <button className="toggle-btn home-icon-btn" onClick={() => window.location.reload()}>
+              <FiHome size={18} style={{ marginRight: 5 }} />
+            </button>
             {["realtime", "historic", "audit", "report"].map(view => (
               <button
                 key={view}
@@ -207,6 +172,7 @@ const IoTDashboard2 = () => {
             ))}
           </div>
         </div>
+
         {dataView === "realtime" && (
           <div className="toggle-switch-row-centered" style={{ marginTop: 0 }}>
             <div className="toggle-switch-row">

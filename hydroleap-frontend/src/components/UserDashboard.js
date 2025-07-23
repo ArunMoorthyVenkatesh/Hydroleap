@@ -1,5 +1,5 @@
 // src/components/UserDashboard.js
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 
@@ -7,23 +7,35 @@ const ACCENT = "#21c6bc";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
+  const [userInfo, setUserInfo] = useState({ name: "", email: "" });
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    const email = localStorage.getItem("userEmail");
+    const name = localStorage.getItem("userName");
+
     if (!token) {
       alert("Please log in.");
       navigate("/login");
+    } else {
+      setUserInfo({ email: email || "No Email" });
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userEmail");
+    localStorage.removeItem("userName");
     navigate("/login");
   };
 
   return (
     <div style={styles.container}>
+      <div style={styles.userInfo}>
+        <p style={styles.name}>{userInfo.name}</p>
+        <p style={styles.email}>{userInfo.email}</p>
+      </div>
+
       <div style={styles.content}>
         <Header />
         <h2 style={styles.title}>User Dashboard</h2>
@@ -68,6 +80,24 @@ const styles = {
     minHeight: "100vh",
     background: "linear-gradient(135deg, #e6fcfa 0%, #fafdff 100%)",
     fontFamily: "'Times New Roman', serif",
+  },
+  userInfo: {
+    position: "absolute",
+    top: "1rem",
+    right: "1.5rem",
+    zIndex: 1000,
+    color: "#11786e",
+    fontSize: "0.92rem",
+    textAlign: "left",
+  },
+  name: {
+    fontWeight: "700",
+    marginBottom: "0.2rem",
+    fontSize: "1.05rem",
+  },
+  email: {
+    fontWeight: "500",
+    fontSize: "0.95rem",
   },
   content: {
     position: "relative",

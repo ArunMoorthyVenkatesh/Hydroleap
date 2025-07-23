@@ -1,17 +1,20 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 import FadeTransition from "./FadeTransition";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AdminLoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const fadeRef = useRef(null);  
+  const fadeRef = useRef(null);
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post("http://54.165.244.9:5001/api/admin-login/login", {
+      const res = await axios.post(`${API_BASE}/admin/login`, {
         email: email.trim().toLowerCase(),
         password,
       });
@@ -39,13 +42,13 @@ const AdminLoginPage = () => {
   return (
     <FadeTransition targetPath="/admin" externalTriggerRef={fadeRef}>
       <div style={styles.container}>
-
-
         <Header />
-
         <div style={styles.overlay}>
-          <h2 style={styles.title}>Admin Login</h2>
-          <div style={styles.form}>
+
+<div style={styles.titleGroup}>
+  <div style={styles.title}>Hydroleap</div>
+  <div style={{ ...styles.title, marginTop: "0.2rem" }}>Admin Login</div>
+</div>          <div style={styles.form}>
             <input
               type="email"
               placeholder="Enter Admin Email"
@@ -64,6 +67,11 @@ const AdminLoginPage = () => {
               Login
             </button>
             {error && <div style={styles.error}>{error}</div>}
+            
+            {/* Back button */}
+            <button onClick={() => navigate("/login")} style={styles.backButton}>
+              Back
+            </button>
           </div>
         </div>
       </div>
@@ -152,7 +160,19 @@ const styles = {
     fontSize: "0.9rem",
     fontWeight: 600,
   },
+  // Styling for the Back button
+  backButton: {
+    padding: "0.8rem",
+    fontSize: "1rem",
+    borderRadius: "10px",
+    border: "1.5px solid #b7f4ee",
+    backgroundColor: "#f7fefe",
+    color: "#185754",
+    cursor: "pointer",
+    marginTop: "1rem",
+    boxShadow: "0 2px 8px #b0ece8",
+    letterSpacing: ".02em",
+  },
 };
-
 
 export default AdminLoginPage;

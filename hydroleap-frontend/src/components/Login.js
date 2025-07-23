@@ -7,6 +7,8 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [form, setForm] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
   const triggerFadeRef = useRef(null);
   const navigate = useNavigate();
 
@@ -27,12 +29,13 @@ const Login = () => {
     e.preventDefault();
     if (!validate()) return;
 
+    setLoading(true);
     try {
       const res = await loginUser(form);
 
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify({ email: form.email }));
-      localStorage.setItem("userEmail", form.email.trim().toLowerCase()); // ✅ important fix
+      localStorage.setItem("userEmail", form.email.trim().toLowerCase());
 
       if (triggerFadeRef.current) {
         triggerFadeRef.current("/user-dashboard");
@@ -41,19 +44,24 @@ const Login = () => {
       }
     } catch (err) {
       alert(err.response?.data?.msg || "Login failed.");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <FadeTransition targetPath="/user-dashboard" externalTriggerRef={triggerFadeRef}>
       <div style={styles.wrapper}>
-
-
         <div style={styles.overlay}>
           <Header />
           <div style={styles.centerWrapper}>
             <div style={styles.container}>
-              <h2 style={styles.title}>Login</h2>
+<div style={styles.titleGroup}>
+  <div style={styles.title}>Hydroleap</div>
+  <div style={{ ...styles.title, marginTop: "0.2rem" }}>User Login</div>
+</div>
+
+
               <form onSubmit={handleSubmit} style={styles.form}>
                 <input
                   name="email"
@@ -64,36 +72,60 @@ const Login = () => {
                 />
                 {errors.email && <div style={styles.error}>{errors.email}</div>}
 
-                <input
-                  name="password"
-                  type="password"
-                  placeholder="Password"
-                  value={form.password}
-                  onChange={handleChange}
-                  style={styles.input}
-                />
+                <div style={{ position: "relative", width: "100%", marginBottom: "1rem" }}>
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleChange}
+                    style={{
+                      ...styles.input,
+                      paddingRight: "2.5rem",
+                      backgroundColor: "#ffffcc",
+                    }}
+                  />
+                  <span
+                    onClick={() => setShowPassword(!showPassword)}
+                    style={{
+                      position: "absolute",
+                      right: "0.9rem",
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      cursor: "pointer",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    {showPassword ? "🙈" : "👁️"}
+                  </span>
+                </div>
                 {errors.password && (
                   <div style={styles.error}>{errors.password}</div>
                 )}
 
-                <button type="submit" style={styles.button}>
-                  Login as User
+                <button type="submit" style={styles.button} disabled={loading}>
+                  {loading ? "Logging in..." : "Login as User"}
                 </button>
               </form>
 
               <p style={styles.orText}>Or</p>
 
               <button
-                onClick={() => {
-                  if (triggerFadeRef.current) {
-                    triggerFadeRef.current("/admin-login");
-                  } else {
-                    navigate("/admin-login");
-                  }
-                }}
-                style={{ ...styles.button, backgroundColor: "#555" }}
+                onClick={() =>
+                  triggerFadeRef.current
+                    ? triggerFadeRef.current("/admin-login")
+                    : navigate("/admin-login")
+                }
+                style={{ ...styles.button }}
               >
                 Login as Admin
+              </button>
+
+              <button
+                onClick={() => (window.location.href = "http://localhost:3000/choose")}
+                style={{ ...styles.button }}
+              >
+                ← Back
               </button>
             </div>
           </div>
@@ -169,7 +201,7 @@ const styles = {
   },
   button: {
     padding: "0.75rem 1rem",
-    background: "linear-gradient(90deg, #21c6bc, #8feee6 100%)",
+    background: "linear-gradient(90deg, #21c6bc, #8feee6)",
     color: "#fff",
     border: "none",
     borderRadius: "8px",
@@ -179,12 +211,13 @@ const styles = {
     transition: "all 0.3s",
     boxShadow: "0 2px 10px #b0ece8",
     letterSpacing: ".02em",
+    marginTop: "0.5rem",
   },
   orText: {
     textAlign: "center",
     fontSize: "0.95rem",
     color: "#8fc1bb",
-    margin: "1rem 0",
+    margin: "1rem 0 0.5rem",
   },
   error: {
     fontSize: "0.85rem",

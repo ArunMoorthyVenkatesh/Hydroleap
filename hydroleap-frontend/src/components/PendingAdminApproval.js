@@ -1,26 +1,28 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const PendingAdminApprovalSection = () => {
   const [pendingAdmins, setPendingAdmins] = useState([]);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchPendingAdmins = async () => {
-      try {
-        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-admins");
-        setPendingAdmins(res.data);
-        setError(null);
-      } catch (error) {
-        setError("Failed to fetch pending admin requests.");
-      }
-    };
+const fetchPendingAdmins = async () => {
+  try {
+    const res = await axios.get(`${API_BASE}/admin/pending-admins`);
+    setPendingAdmins(res.data);
+    setError(null);
+  } catch (error) {
+    setError("Failed to fetch pending admin requests.");
+  }
+};
+
     fetchPendingAdmins();
   }, []);
 
   const handleDecision = async (adminId, decision) => {
     try {
-      await axios.post(`http://54.165.244.9:5001/api/admin/handle-admin-request`, {
+      await axios.post(`${API_BASE}/admin/handle-admin-request`, {
         id: adminId,
         action: decision,
       });

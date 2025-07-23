@@ -3,6 +3,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header";
 
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+
 const Admin = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
   const navigate = useNavigate();
@@ -10,7 +12,7 @@ const Admin = () => {
   useEffect(() => {
     const fetchPendingUsers = async () => {
       try {
-        const res = await axios.get("http://54.165.244.9:5001/api/admin/pending-users");
+        const res = await axios.get("${API_BASE}/admin/pending-users");
         setPendingUsers(res.data);
       } catch (err) {
         console.error("Failed to fetch pending users", err);
@@ -21,7 +23,7 @@ const Admin = () => {
 
   const handleApprove = async (email) => {
     try {
-      await axios.post(`http://54.165.244.9:5001/api/admin/approve/${email}`);
+      await axios.post(`${API_BASE}/admin/approve/${email}`);
       setPendingUsers(pendingUsers.filter((user) => user.email !== email));
       alert("User approved and notified via email.");
     } catch (err) {
@@ -32,7 +34,7 @@ const Admin = () => {
 
   const handleReject = async (email) => {
     try {
-      await axios.post(`http://54.165.244.9:5001/api/admin/reject/${email}`);
+      await axios.post(`${API_BASE}/admin/reject/${email}`);
       setPendingUsers(pendingUsers.filter((user) => user.email !== email));
       alert("User rejected and notified via email.");
     } catch (err) {

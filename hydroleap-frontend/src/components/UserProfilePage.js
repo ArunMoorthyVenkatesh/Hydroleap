@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Header from "./Header"; // ✅ Ensures logo is included
+const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const ACCENT = "#21c6bc";
 
@@ -13,9 +14,10 @@ const UserProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://54.165.244.9:5001/api/user/me", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+const res = await axios.get(`${API_BASE}/user/me`, {
+  headers: { Authorization: `Bearer ${token}` },
+});
+
         setUser(res.data);
       } catch (err) {
         alert("Could not load profile");
