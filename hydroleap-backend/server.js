@@ -1,3 +1,4 @@
+// Load environment variables from .env file
 require("dotenv").config();
 
 const express = require("express");
@@ -8,14 +9,26 @@ const app = express();
 // --- Middleware ---
 app.use(cors({
   origin: [
-    "http://localhost:3000",
-    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com",
-    "http://hydroleap-web-frontend.s3-website-us-east-1.amazonaws.com",
-    "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com"
+    "http://localhost:3000",  // Local development (React frontend)
+    "http://hydroleap-iot-dashboard.s3-website-us-east-1.amazonaws.com", // S3 frontend domain
+    "http://iotdashboard2.s3-website-us-east-1.amazonaws.com",  // Another S3 frontend domain
+    "http://hydroleap-web-frontend.s3-website-us-east-1.amazonaws.com", // Additional frontend domain
+    "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com"  // Another frontend domain
   ],
-  credentials: true,
+  credentials: true, // Allow cookies and credentials to be passed along with the request
 }));
-app.use(express.json()); // Parse incoming JSON
+
+// Log incoming requests to track CORS errors
+app.use((req, res, next) => {
+  console.log(`Received request from ${req.get('Origin')}`);
+  next();
+});
+
+// Ensure preflight (OPTIONS) requests are handled properly
+app.options('*', cors()); // Preflight handling for all routes
+
+// Parse incoming JSON
+app.use(express.json());
 
 // --- Route Imports ---
 const otpRoutes = require("./routes/otp");
@@ -28,7 +41,6 @@ const adminRegisterRoutes = require("./routes/adminRegister");
 const adminLoginRoutes = require("./routes/adminLogin");
 const adminProfileRoutes = require("./routes/adminProfile");
 const adminAuthRoutes = require("./routes/adminAuth");
-
 const iotRoutes = require("./routes/iot2"); // ✅ Correct route import
 
 const projectRoutes2 = require("./routes/projects2");
@@ -75,7 +87,6 @@ app.use("/api/projects/project-access", projectAccessRoutes);
 app.use("/api/check", checkRoutes);
 app.use("/api/user-projects", userProjectsRoutes);
 
-
 if (projectHistoryRoutes) {
   app.use("/api/project-history", projectHistoryRoutes);
 }
@@ -88,6 +99,8 @@ app.get("/", (req, res) => {
 });
 
 // --- MongoDB Connection ---
+console.log("MongoDB URI:", process.env.MONGO_URI);  // Debug log to check MongoDB URI
+
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {

@@ -32,7 +32,6 @@ const Login = () => {
     setLoading(true);
     try {
       const res = await loginUser(form);
-
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("user", JSON.stringify({ email: form.email }));
       localStorage.setItem("userEmail", form.email.trim().toLowerCase());
@@ -56,11 +55,10 @@ const Login = () => {
           <Header />
           <div style={styles.centerWrapper}>
             <div style={styles.container}>
-<div style={styles.titleGroup}>
-  <div style={styles.title}>Hydroleap</div>
-  <div style={{ ...styles.title, marginTop: "0.2rem" }}>User Login</div>
-</div>
-
+              <div style={styles.titleGroup}>
+                <div style={styles.title}>Hydroleap</div>
+                <div style={{ ...styles.title, marginTop: "0.2rem" }}>User Login</div>
+              </div>
 
               <form onSubmit={handleSubmit} style={styles.form}>
                 <input
@@ -81,27 +79,31 @@ const Login = () => {
                     onChange={handleChange}
                     style={{
                       ...styles.input,
-                      paddingRight: "2.5rem",
                       backgroundColor: "#ffffcc",
+                      paddingRight: "2.75rem",
+                      boxSizing: "border-box",
                     }}
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
                     style={{
                       position: "absolute",
-                      right: "0.9rem",
                       top: "50%",
+                      right: "1rem",
                       transform: "translateY(-50%)",
                       cursor: "pointer",
-                      fontSize: "1.2rem",
+                      fontSize: "1.1rem",
+                      lineHeight: "1",
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
                     }}
                   >
-                    {showPassword ? "🙈" : "👁️"}
+                    {showPassword ? "🙈" : "🐵"}
                   </span>
                 </div>
-                {errors.password && (
-                  <div style={styles.error}>{errors.password}</div>
-                )}
+                {errors.password && <div style={styles.error}>{errors.password}</div>}
 
                 <button type="submit" style={styles.button} disabled={loading}>
                   {loading ? "Logging in..." : "Login as User"}
@@ -116,14 +118,14 @@ const Login = () => {
                     ? triggerFadeRef.current("/admin-login")
                     : navigate("/admin-login")
                 }
-                style={{ ...styles.button }}
+                style={styles.button}
               >
                 Login as Admin
               </button>
 
               <button
                 onClick={() => (window.location.href = "http://localhost:3000/choose")}
-                style={{ ...styles.button }}
+                style={styles.button}
               >
                 ← Back
               </button>
@@ -173,10 +175,13 @@ const styles = {
     animation: "fadeIn 1s ease forwards",
     border: "1.5px solid #e0fcfa",
   },
+  titleGroup: {
+    marginBottom: "1.5rem",
+    textAlign: "center",
+  },
   title: {
     fontSize: "2rem",
     fontWeight: "bold",
-    marginBottom: "1.5rem",
     fontFamily: "Georgia, serif",
     color: ACCENT,
     letterSpacing: ".01em",
@@ -187,6 +192,7 @@ const styles = {
     width: "100%",
   },
   input: {
+    width: "100%",
     padding: "0.75rem 1rem",
     fontSize: "1rem",
     fontFamily: "inherit",
@@ -198,6 +204,7 @@ const styles = {
     outline: "none",
     backdropFilter: "blur(4px)",
     transition: "all 0.3s ease",
+    boxSizing: "border-box",
   },
   button: {
     padding: "0.75rem 1rem",
