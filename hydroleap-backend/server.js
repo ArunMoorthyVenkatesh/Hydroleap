@@ -14,7 +14,8 @@ app.use(cors({
     "http://iotdashboard2.s3-website-us-east-1.amazonaws.com",  // Another S3 frontend domain
     "http://hydroleap-web-frontend.s3-website-us-east-1.amazonaws.com", // Additional frontend domain
     "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com",  // Another frontend domain
-        "http://hydroleap-frontend.s3-website-us-east-1.amazonaws.com"
+        "http://hydroleap-frontend.s3-website-us-east-1.amazonaws.com",
+        "http://iot-hydroleap-bucket.s3-website-us-east-1.amazonaws.com"
   ],
   credentials: true, // Allow cookies and credentials to be passed along with the request
 }));
@@ -116,7 +117,7 @@ mongoose
   });
 
 // --- Start Server ---
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT || 5002;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
