@@ -57,9 +57,7 @@ const res = await axios.get(`${API_BASE}/admin/pending-users`);
               <button onClick={() => handleApprove(user._id)} style={styles.buttonGreen}>
                 Approve
               </button>
-              <button onClick={() => handleReject(user._id)} style={styles.buttonRed}>
-                Reject
-              </button>
+
             </div>
           </div>
         ))

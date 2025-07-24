@@ -7,45 +7,55 @@ const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const Admin = () => {
   const [pendingUsers, setPendingUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [actionError, setActionError] = useState(null);
   const navigate = useNavigate();
 
+  // Fetch pending users on mount
   useEffect(() => {
     const fetchPendingUsers = async () => {
       try {
-        const res = await axios.get("${API_BASE}/admin/pending-users");
+        const res = await axios.get(`${API_BASE}/admin/pending-users`);
         setPendingUsers(res.data);
       } catch (err) {
+        setActionError("Failed to fetch pending users");
         console.error("Failed to fetch pending users", err);
+      } finally {
+        setLoading(false);
       }
     };
     fetchPendingUsers();
   }, []);
 
+  // Approve handler
   const handleApprove = async (email) => {
+    setActionError(null);
     try {
       await axios.post(`${API_BASE}/admin/approve/${email}`);
-      setPendingUsers(pendingUsers.filter((user) => user.email !== email));
+      setPendingUsers((prev) => prev.filter((user) => user.email !== email));
       alert("User approved and notified via email.");
     } catch (err) {
+      setActionError("Failed to approve user.");
       console.error(err);
-      alert("Failed to approve user.");
     }
   };
 
+  // Reject handler
   const handleReject = async (email) => {
+    setActionError(null);
     try {
       await axios.post(`${API_BASE}/admin/reject/${email}`);
-      setPendingUsers(pendingUsers.filter((user) => user.email !== email));
+      setPendingUsers((prev) => prev.filter((user) => user.email !== email));
       alert("User rejected and notified via email.");
     } catch (err) {
+      setActionError("Failed to reject user.");
       console.error(err);
-      alert("Failed to reject user.");
     }
   };
 
   const handleLogout = () => {
     localStorage.clear();
-    navigate("/");  
+    navigate("/");
   };
 
   return (
@@ -58,7 +68,11 @@ const Admin = () => {
         </button>
       </div>
 
-      {pendingUsers.length === 0 ? (
+      {loading ? (
+        <p style={{ color: "white" }}>Loading...</p>
+      ) : actionError ? (
+        <p style={{ color: "red" }}>{actionError}</p>
+      ) : pendingUsers.length === 0 ? (
         <p style={{ color: "white" }}>No pending users.</p>
       ) : (
         <ul style={styles.list}>
@@ -74,7 +88,11 @@ const Admin = () => {
                 </button>
                 <button
                   onClick={() => handleReject(user.email)}
-                  style={{ ...styles.button, backgroundColor: "red", marginLeft: "1rem" }}
+                  style={{
+                    ...styles.button,
+                    backgroundColor: "red",
+                    marginLeft: "1rem",
+                  }}
                 >
                   Reject
                 </button>
@@ -83,7 +101,6 @@ const Admin = () => {
           ))}
         </ul>
       )}
-
     </div>
   );
 };
@@ -92,7 +109,7 @@ const styles = {
   container: {
     backgroundColor: "#000",
     color: "#fff",
-    height: "100%",
+    minHeight: "100vh",
     fontFamily: "Times New Roman, Times New Roman, serif",
     padding: "2rem",
   },
@@ -134,6 +151,7 @@ const styles = {
     borderRadius: "5px",
     color: "#fff",
     cursor: "pointer",
+    fontWeight: "bold",
   },
 };
 

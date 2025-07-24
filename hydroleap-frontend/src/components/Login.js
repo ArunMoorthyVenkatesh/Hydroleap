@@ -124,7 +124,7 @@ const Login = () => {
               </button>
 
               <button
-                onClick={() => (window.location.href = "http://localhost:3000/choose")}
+onClick={() => (window.location.href = "http://hydroleap-frontend.s3-website-us-east-1.amazonaws.com/choose")}
                 style={styles.button}
               >
                 ← Back

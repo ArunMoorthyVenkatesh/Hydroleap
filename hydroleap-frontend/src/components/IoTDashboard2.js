@@ -119,18 +119,24 @@ const IoTDashboard2 = () => {
   useEffect(() => {
     const fetchAll = async () => {
       try {
-        const res1 = await axios.get(`http://localhost:5001/api/project-list/${projectId}/device`);
-        setDeviceId(res1.data.deviceId);
-        setData(await fetchIoTData(projectId, res1.data.deviceId));
+const res1 = await axios.get(
+  `${process.env.REACT_APP_API_BASE}/project-list/${projectId}/device`
+);
+setDeviceId(res1.data.deviceId);
+setData(await fetchIoTData(projectId, res1.data.deviceId));
+
       } catch {
         setError("Failed to load project data.");
         setData({});
       }
 
-      try {
-        const res2 = await axios.get(`http://localhost:5001/api/history/byProjectId/${projectId}`);
-        setHistory(res2.data);
-      } catch {}
+try {
+  const res2 = await axios.get(
+    `${process.env.REACT_APP_API_BASE}/history/byProjectId/${projectId}`
+  );
+  setHistory(res2.data);
+} catch {}
+
     };
 
     fetchAll();
