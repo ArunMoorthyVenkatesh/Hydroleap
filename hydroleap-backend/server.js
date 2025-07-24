@@ -16,7 +16,7 @@ app.use(cors({
     "http://iotdashboard2025.s3-website-us-east-1.amazonaws.com",  // Another frontend domain
         "http://hydroleap-frontend.s3-website-us-east-1.amazonaws.com",
         "http://iot-hydroleap-bucket.s3-website-us-east-1.amazonaws.com",
-        "https://www.iot-hydroleap.com"
+  "https://iot-hydroleap.com"
   ],
   credentials: true, // Allow cookies and credentials to be passed along with the request
 }));
