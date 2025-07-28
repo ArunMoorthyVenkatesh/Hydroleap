@@ -1,8 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { FiEye, FiEyeOff } from "react-icons/fi";
 import Header from "./Header";
+
 const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
+const ACCENT = "#21c6bc";
 
 const Register = () => {
   const [form, setForm] = useState({
@@ -21,7 +24,13 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [otpSent, setOtpSent] = useState(false);
   const [role, setRole] = useState("user");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const otpRef = useRef(null);
   const navigate = useNavigate();
+
+  // --- DEBUG LOG FOR FORM STATE ---
+  console.log("Current form state:", form);
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -39,20 +48,21 @@ const Register = () => {
     const nameRegex = /^[A-Za-z]{1,50}$/;
     const phoneRegex = /^\+65\s?[89]\d{7}$/;
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/i;
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
     const genderOptions = ["Male", "Female", "Other"];
-
     const newErrors = {};
 
-    if (!nameRegex.test(form.firstName)) newErrors.firstName = "First name should be 1–50 alphabetical characters.";
-    if (form.middleName && !nameRegex.test(form.middleName)) newErrors.middleName = "Middle name must be alphabetical.";
-    if (!nameRegex.test(form.lastName)) newErrors.lastName = "Last name should be 1–50 alphabetical characters.";
-    if (!form.dob || !isValidDOB(form.dob)) newErrors.dob = "Must be 18 years or older.";
-    if (!phoneRegex.test(form.phone)) newErrors.phone = "Invalid SG phone number. Example: +65 91234567";
-    if (!genderOptions.includes(form.gender)) newErrors.gender = "Please select a valid gender.";
+    if (!nameRegex.test(form.firstName)) newErrors.firstName = "First name must be 1–50 letters.";
+    if (form.middleName && !nameRegex.test(form.middleName)) newErrors.middleName = "Middle name must be letters only.";
+    if (!nameRegex.test(form.lastName)) newErrors.lastName = "Last name must be 1–50 letters.";
+
+
+
+    if (!form.dob || !isValidDOB(form.dob)) newErrors.dob = "Must be at least 18 years old.";
+    if (!phoneRegex.test(form.phone)) newErrors.phone = "Invalid SG phone. Format: +65 91234567";
+    if (!genderOptions.includes(form.gender)) newErrors.gender = "Select a valid gender.";
     if (!emailRegex.test(form.email)) newErrors.email = "Invalid email format.";
-    if (!passwordRegex.test(form.password)) newErrors.password = "Password must be 8+ characters with uppercase, lowercase, number & special character.";
+    if (!passwordRegex.test(form.password)) newErrors.password = "Password must be 8+ chars with A-Z, a-z, 0-9, special char.";
     if (form.password !== form.confirmPassword) newErrors.confirmPassword = "Passwords do not match.";
 
     setErrors(newErrors);
@@ -63,36 +73,31 @@ const Register = () => {
     try {
       const res = await axios.get(`${API_BASE}/check/check-email/${email}`);
       return res.data.exists;
-    } catch (err) {
-      console.error("Email check failed", err);
+    } catch {
       return false;
     }
   };
 
   const sendOtp = async () => {
     if (!validate()) {
-      alert("Please correct the highlighted errors before proceeding.");
+      alert("Fix validation errors first.");
       return;
     }
 
     const email = form.email.trim().toLowerCase();
     const emailExists = await checkEmailExists(email);
     if (emailExists) {
-      setErrors((prev) => ({
-        ...prev,
-        email: role === "admin"
-          ? "Email already exists or is pending approval."
-          : "Email already exists or is pending approval.",
-      }));
+      setErrors((prev) => ({ ...prev, email: "Email already exists or is pending." }));
       return;
     }
 
     try {
-      await axios.post(`${API_BASE}/otp/send`, {
-        email,
-      });
-      alert("OTP sent to your email.");
+      await axios.post(`${API_BASE}/otp/send`, { email });
+      alert("OTP sent!");
       setOtpSent(true);
+      setTimeout(() => {
+        otpRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 200);
     } catch (err) {
       alert(err.response?.data?.message || "Failed to send OTP.");
     }
@@ -100,7 +105,7 @@ const Register = () => {
 
   const verifyAndRegister = async () => {
     if (!validate()) {
-      alert("Please correct the highlighted errors before proceeding.");
+      alert("Fix validation errors first.");
       return;
     }
 
@@ -110,16 +115,20 @@ const Register = () => {
         otp: form.otp.toString().trim(),
       });
 
-      const res = await axios.post(`${API_BASE}/auth/request-signup`, {
+      // --- DEBUG LOG FOR PAYLOAD BEFORE REGISTER ---
+      const payload = {
         ...form,
         email: form.email.trim().toLowerCase(),
         role,
-      });
+      };
+      console.log("Submitting registration payload:", payload);
 
-      alert(res.data.message || "Registered successfully.");
+      const res = await axios.post(`${API_BASE}/auth/request-signup`, payload);
+
+      alert(res.data.message || "Registered successfully!");
       navigate("/login");
     } catch (err) {
-      alert(err.response?.data?.message || "OTP verification or registration failed.");
+      alert(err.response?.data?.message || "OTP verification failed.");
     }
   };
 
@@ -129,89 +138,117 @@ const Register = () => {
         <Header />
         <div style={styles.centerWrapper}>
           <div style={styles.container}>
+            <button onClick={() => navigate("/choose")} style={styles.backButton}>
+              ← Back
+            </button>
             <h2 style={styles.title}>Register</h2>
             <div style={styles.roleSwitch}>
-              <button
-                onClick={() => setRole("user")}
-                style={{
-                  ...styles.roleButton,
-                  background: role === "user" ? ACCENT + "22" : "rgba(255,255,255,0.06)",
-                  color: role === "user" ? ACCENT : "#187d69",
-                  fontWeight: role === "user" ? "700" : "600"
-                }}
-              >
-                Register as User
-              </button>
-              <button
-                onClick={() => setRole("admin")}
-                style={{
-                  ...styles.roleButton,
-                  background: role === "admin" ? ACCENT + "22" : "rgba(255,255,255,0.06)",
-                  color: role === "admin" ? ACCENT : "#187d69",
-                  fontWeight: role === "admin" ? "700" : "600"
-                }}
-              >
-                Register as Admin
-              </button>
+              {["user", "admin"].map((r) => (
+                <button
+                  key={r}
+                  onClick={() => setRole(r)}
+                  style={{
+                    ...styles.roleButton,
+                    background: role === r ? "#21c6bc22" : "#f3fffe",
+                    color: role === r ? "#21c6bc" : "#187d69",
+                    fontWeight: role === r ? "700" : "600",
+                  }}
+                >
+                  {r === "user" ? "User" : "Admin"}
+                </button>
+              ))}
             </div>
-            <div style={styles.form}>
-              <input name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} style={styles.input} />
-              {errors.firstName && <span style={styles.error}>{errors.firstName}</span>}
+            <div style={styles.scrollWrapper}>
+              <form style={styles.form}>
+                <input name="firstName" placeholder="First Name" value={form.firstName} onChange={handleChange} style={styles.input} />
+                {errors.firstName && <span style={styles.error}>{errors.firstName}</span>}
 
-              <input name="middleName" placeholder="Middle Name (Optional)" value={form.middleName} onChange={handleChange} style={styles.input} />
-              {errors.middleName && <span style={styles.error}>{errors.middleName}</span>}
+                <input name="middleName" placeholder="Middle Name (Optional)" value={form.middleName} onChange={handleChange} style={styles.input} />
+                {errors.middleName && <span style={styles.error}>{errors.middleName}</span>}
 
-              <input name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} style={styles.input} />
-              {errors.lastName && <span style={styles.error}>{errors.lastName}</span>}
+                <input name="lastName" placeholder="Last Name" value={form.lastName} onChange={handleChange} style={styles.input} />
+                {errors.lastName && <span style={styles.error}>{errors.lastName}</span>}
 
-              <input name="dob" type="date" max="2007-06-02" value={form.dob} onChange={handleChange} style={styles.input} />
-              {errors.dob && <span style={styles.error}>{errors.dob}</span>}
 
-              <input name="phone" placeholder="Phone Number (e.g., +65 91234567)" value={form.phone} onChange={handleChange} style={styles.input} />
-              {errors.phone && <span style={styles.error}>{errors.phone}</span>}
+                <input name="dob" type="date" value={form.dob} onChange={handleChange} style={styles.input} />
+                {errors.dob && <span style={styles.error}>{errors.dob}</span>}
 
-              <div style={styles.genderGroup}>
-                {["Male", "Female"].map((option) => (
-                  <button
-                    key={option}
-                    type="button"
-                    onClick={() => {
-                      setForm({ ...form, gender: option });
-                      setErrors({ ...errors, gender: "" });
-                    }}
-                    style={{
-                      ...styles.genderButton,
-                      borderColor: form.gender === option ? ACCENT : "rgba(35,193,181,0.16)",
-                      color: form.gender === option ? "#fff" : ACCENT,
-                      background: form.gender === option ? ACCENT : "rgba(255,255,255,0.07)",
-                      fontWeight: form.gender === option ? "700" : "600",
-                    }}
-                  >
-                    {option}
-                  </button>
-                ))}
-              </div>
-              {errors.gender && <span style={styles.error}>{errors.gender}</span>}
+                <input name="phone" placeholder="Phone (e.g. +65 91234567)" value={form.phone} onChange={handleChange} style={styles.input} />
+                {errors.phone && <span style={styles.error}>{errors.phone}</span>}
 
-              <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={styles.input} />
-              {errors.email && <span style={styles.error}>{errors.email}</span>}
+                <div style={styles.genderGroup}>
+                  {["Male", "Female"].map((g) => (
+                    <button
+                      key={g}
+                      type="button"
+                      onClick={() => {
+                        setForm({ ...form, gender: g });
+                        setErrors({ ...errors, gender: "" });
+                      }}
+                      style={{
+                        ...styles.genderButton,
+                        background: form.gender === g ? ACCENT : "#edfcfb",
+                        color: form.gender === g ? "#fff" : ACCENT,
+                        fontWeight: form.gender === g ? 700 : 600,
+                      }}
+                    >
+                      {g}
+                    </button>
+                  ))}
+                </div>
+                {errors.gender && <span style={styles.error}>{errors.gender}</span>}
 
-              <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} style={styles.input} />
-              {errors.password && <span style={styles.error}>{errors.password}</span>}
+                <input name="email" placeholder="Email" value={form.email} onChange={handleChange} style={styles.input} />
+                {errors.email && <span style={styles.error}>{errors.email}</span>}
 
-              <input name="confirmPassword" type="password" placeholder="Confirm Password" value={form.confirmPassword} onChange={handleChange} style={styles.input} />
-              {errors.confirmPassword && <span style={styles.error}>{errors.confirmPassword}</span>}
+                <div style={{ position: "relative" }}>
+                  <input
+                    name="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="Password"
+                    value={form.password}
+                    onChange={handleChange}
+                    style={styles.input}
+                  />
+                  <span onClick={() => setShowPassword(!showPassword)} style={styles.eyeIcon}>
+                    {showPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                  </span>
+                  {errors.password && <span style={styles.error}>{errors.password}</span>}
+                </div>
 
-              {!otpSent ? (
-                <button onClick={sendOtp} style={styles.button}>Send OTP</button>
-              ) : (
-                <>
-                  <input name="otp" placeholder="Enter OTP" value={form.otp} onChange={handleChange} style={styles.input} />
-                  <button onClick={verifyAndRegister} style={styles.button}>
-                    Register as {role === "admin" ? "Admin" : "User"}
-                  </button>
-                </>
-              )}
+                <div style={{ position: "relative" }}>
+                  <input
+                    name="confirmPassword"
+                    type={showConfirmPassword ? "text" : "password"}
+                    placeholder="Confirm Password"
+                    value={form.confirmPassword}
+                    onChange={handleChange}
+                    style={styles.input}
+                  />
+                  <span onClick={() => setShowConfirmPassword(!showConfirmPassword)} style={styles.eyeIcon}>
+                    {showConfirmPassword ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                  </span>
+                  {errors.confirmPassword && <span style={styles.error}>{errors.confirmPassword}</span>}
+                </div>
+
+                {!otpSent ? (
+                  <button type="button" onClick={sendOtp} style={styles.button}>Send OTP</button>
+                ) : (
+                  <>
+                    <input
+                      ref={otpRef}
+                      name="otp"
+                      placeholder="Enter OTP"
+                      value={form.otp}
+                      onChange={handleChange}
+                      style={styles.input}
+                    />
+                    <button type="button" onClick={verifyAndRegister} style={styles.button}>
+                      Register as {role === "admin" ? "Admin" : "User"}
+                    </button>
+                  </>
+                )}
+              </form>
             </div>
           </div>
         </div>
@@ -220,130 +257,128 @@ const Register = () => {
   );
 };
 
-const ACCENT = "#21c6bc";
-const ACCENT_SOFT = "#e0fcfa";
-
 const styles = {
   wrapper: {
-    position: "relative",
-    height: "100vh",
-    overflow: "hidden",
-    fontFamily: "Times New Roman, serif",
-    background: "linear-gradient(135deg, #e3fbfa 0%, #fafdff 100%)",
+    fontFamily: "Arial",
+    background: "#f0fefd",
+    minHeight: "100vh",
+    padding: "1rem",
+    boxSizing: "border-box",
   },
-  overlay: {
-    position: "relative",
-    zIndex: 1,
-    height: "100%",
-    width: "100%",
-    display: "flex",
-    flexDirection: "column",
-    color: "#222",
-  },
-  centerWrapper: {
-    flex: 1,
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  container: {
-    backdropFilter: "blur(14px)",
-    background: "rgba(255,255,255,0.95)",
-    borderRadius: "18px",
-    padding: "1.5rem",
-    width: "300px",
-    boxShadow: "0 8px 28px 0 rgba(60,220,200,0.08), 0 1.5px 4px 0 #a3edea",
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    border: "1.5px solid #e0fcfa",
-  },
+  overlay: { display: "flex", flexDirection: "column", alignItems: "center" },
   title: {
-    fontSize: "1.8rem",
+    fontSize: "1.5rem",
     fontWeight: "bold",
+    textAlign: "center",
     marginBottom: "1rem",
-    fontFamily: "Georgia, serif",
     color: ACCENT,
-    letterSpacing: ".03em",
   },
   roleSwitch: {
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "space-between",
     gap: "0.5rem",
     marginBottom: "1rem",
-    width: "100%",
+    flexWrap: "wrap",
   },
   roleButton: {
     flex: 1,
-    padding: "0.5rem",
-    borderRadius: "8px",
-    border: "1px solid #c9f8f6",
-    color: ACCENT,
-    fontSize: "0.97rem",
-    backgroundColor: ACCENT_SOFT,
+    padding: "0.6rem",
+    border: "1px solid #b7f4ee",
+    borderRadius: "10px",
+    fontSize: "0.9rem",
     cursor: "pointer",
-    transition: "all 0.25s",
-    fontWeight: 600,
+  },
+  scrollWrapper: {
+    maxHeight: "65vh",
+    overflowY: "auto",
+    paddingRight: "6px",
+    WebkitOverflowScrolling: "touch",
   },
   form: {
     display: "flex",
     flexDirection: "column",
-    width: "100%",
+    gap: "0.8rem",
   },
   input: {
-    padding: "0.6rem 0.8rem",
-    fontSize: "0.97rem",
-    fontFamily: "inherit",
-    borderRadius: "8px",
-    border: "1px solid #c9f8f6",
-    backgroundColor: "#f6ffff",
-    color: "#2c4a4a",
-    marginBottom: "0.7rem",
+    padding: "0.75rem",
+    fontSize: "1rem",
+    borderRadius: "10px",
+    border: "1.5px solid #b7f4ee",
+    backgroundColor: "#f7fefe",
+    color: "#185754",
+    width: "100%",
+    boxSizing: "border-box",
     outline: "none",
-    transition: "border .2s, background .2s",
-    boxShadow: "0 0.5px 2px #e0fcfa",
+    transition: "border 0.2s ease",
+  },
+  error: {
+    fontSize: "0.75rem",
+    color: "#ff5c5c",
+    marginTop: "-0.5rem",
+    paddingLeft: "2px",
+  },
+  eyeIcon: {
+    position: "absolute",
+    top: "50%",
+    right: "12px",
+    transform: "translateY(-50%)",
+    cursor: "pointer",
+    color: "#185754",
   },
   button: {
-    padding: "0.7rem 1rem",
-    background: "linear-gradient(90deg, #21c6bc 10%, #85ede5 100%)",
+    padding: "0.75rem",
+    background: ACCENT,
     color: "#fff",
     border: "none",
-    borderRadius: "8px",
-    fontWeight: "700",
+    borderRadius: "10px",
+    fontWeight: "bold",
+    fontSize: "1rem",
     cursor: "pointer",
-    width: "100%",
-    transition: "all 0.25s",
-    marginTop: "0.2rem",
-    boxShadow: "0 2px 8px 0 #b0ece8",
-    letterSpacing: ".02em"
   },
   genderGroup: {
     display: "flex",
-    justifyContent: "space-between",
     gap: "0.5rem",
-    marginBottom: "0.7rem",
-    marginTop: "-0.1rem"
+    flexWrap: "wrap",
   },
   genderButton: {
     flex: 1,
-    padding: "0.5rem",
+    padding: "0.6rem",
     borderRadius: "20px",
     border: "1.5px solid #b9efed",
-    color: ACCENT,
-    backgroundColor: "#edfcfb",
-    fontFamily: "inherit",
+    fontSize: "0.9rem",
     cursor: "pointer",
-    fontSize: "0.97rem",
-    fontWeight: 600,
-    transition: "all 0.2s"
   },
-  error: {
-    color: "#ff8383",
-    fontSize: "0.8rem",
-    marginTop: "-0.6rem",
+  centerWrapper: {
+    width: "100%",
+    maxWidth: "480px",
+    margin: "0 auto",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    minHeight: "calc(100vh - 100px)",
+    paddingTop: "2rem",
+    paddingBottom: "2rem",
+    boxSizing: "border-box",
+  },
+  container: {
+    background: "#fff",
+    padding: "2rem",
+    borderRadius: "18px",
+    boxShadow: "0 8px 20px rgba(0,0,0,0.05)",
+    width: "100%",
+    maxWidth: "480px",
+    boxSizing: "border-box",
+  },
+  backButton: {
+    background: "none",
+    border: "none",
+    color: ACCENT,
+    fontWeight: "600",
+    fontSize: "0.95rem",
+    cursor: "pointer",
     marginBottom: "0.5rem",
-    paddingLeft: "0.2rem",
-    fontWeight: 600,
+    textAlign: "left",
+    padding: "0",
   },
 };
 

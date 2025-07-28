@@ -9,7 +9,6 @@ import Register from "./components/Register";
 import Notes from "./components/Notes";
 
 // Admin Components
-import AdminLoginPage from "./components/AdminLoginPage";
 import AdminDashboard from "./components/AdminDashboard"; // SPA dashboard with all sections inside
 import ProjectAccessPage from "./components/ProjectAccessPage";
 
@@ -38,7 +37,6 @@ const App = () => {
         <Route path="/iot/:projectId" element={<IoTDashboard2 />} />
 
         {/* Admin Auth & SPA Dashboard */}
-        <Route path="/admin-login" element={<AdminLoginPage />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/admin/project-access" element={<ProjectAccessPage />} />
 

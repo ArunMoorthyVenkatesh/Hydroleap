@@ -1,3 +1,5 @@
+// routes/authRoutes.js
+
 const express = require('express');
 const bcrypt = require('bcrypt');
 const router = express.Router();
@@ -7,8 +9,12 @@ const User = require('../models/User');
 const PendingAdmin = require('../models/PendingAdmin');
 const Admin = require('../models/Admin');
 
+// Signup endpoint for users and admins
 router.post('/request-signup', async (req, res) => {
   try {
+    // DEBUG: Log everything received from frontend
+    console.log("🟡 Received request-signup:", req.body);
+
     const {
       firstName,
       middleName,
@@ -22,14 +28,20 @@ router.post('/request-signup', async (req, res) => {
       role,
     } = req.body;
 
-    if (!email || !password || !confirmPassword || !role)
+    // Validate presence of all fields
+    if (
+      !firstName || !lastName || !dob || !phone || !gender ||
+      !email || !password || !confirmPassword || !role 
+    ) {
       return res.status(400).json({ message: 'Missing required fields' });
+    }
 
     if (password !== confirmPassword)
       return res.status(400).json({ message: 'Passwords do not match' });
 
     const lowerEmail = email.trim().toLowerCase();
 
+    // Check for existing accounts
     const existsInUsers = await User.findOne({ email: lowerEmail });
     const existsInPendingUsers = await PendingUser.findOne({ email: lowerEmail });
     const existsInAdmins = await Admin.findOne({ email: lowerEmail });
@@ -42,7 +54,7 @@ router.post('/request-signup', async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const fullName = `${firstName} ${middleName || ""} ${lastName}`.trim();
+    const fullName = `${firstName} ${middleName || ""} ${lastName}`.replace(/\s+/g, " ").trim();
 
     const commonFields = {
       name: fullName,
@@ -52,6 +64,9 @@ router.post('/request-signup', async (req, res) => {
       email: lowerEmail,
       password: hashedPassword,
     };
+
+    // Log what is about to be saved
+    console.log("🟢 Fields to PendingUser/PendingAdmin:", commonFields);
 
     if (role === 'admin') {
       const pendingAdmin = new PendingAdmin(commonFields);
@@ -67,7 +82,7 @@ router.post('/request-signup', async (req, res) => {
       });
     }
   } catch (err) {
-    console.error("Signup error:", err.message);
+    console.error("Signup error:", err.message, err);
     return res.status(500).json({ message: 'Server error during signup' });
   }
 });

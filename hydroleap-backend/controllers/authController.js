@@ -4,6 +4,7 @@ const PendingUser = require("../models/PendingUser");
 const PendingAdmin = require("../models/PendingAdmin");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const sendEmail = require("../utils/sendEmail"); // adjust path if needed
 
 // 🔹 Handle registration request for both users and admins
 async function requestSignup(req, res) {
@@ -23,7 +24,7 @@ async function requestSignup(req, res) {
 
     if (
       !firstName || !lastName || !dob || !phone || !gender ||
-      !email || !password || !confirmPassword || !role
+      !email || !password || !confirmPassword || !role 
     ) {
       return res.status(400).json({ message: "All fields are required" });
     }
@@ -88,17 +89,22 @@ async function loginUser(req, res) {
   try {
     const { email, password } = req.body;
 
+    console.log("🟡 Login attempt for:", email);
+
     if (!email || !password) {
+      console.log("🔴 Missing email or password");
       return res.status(400).json({ message: "All fields are required" });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
+      console.log("🔴 User not found or not approved:", email);
       return res.status(400).json({ message: "User not found or not approved yet." });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
+      console.log("🔴 Invalid password for:", email);
       return res.status(400).json({ message: "Invalid credentials" });
     }
 
@@ -107,6 +113,23 @@ async function loginUser(req, res) {
       process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
+
+    console.log("🟢 Password verified. JWT token generated.");
+
+    const loginTime = new Date().toLocaleString("en-SG", {
+      timeZone: "Asia/Singapore",
+    });
+
+    const subject = "Successful sign-in to Hydroleap IOT Dashboard";
+    const text = `You have successfully signed in to your Hydroleap IOT Dashboard account.\n\nLogin Time: ${loginTime} (SGT)\n\nIf this wasn't you, please reset your password immediately.\n\n– Hydroleap Team`;
+
+    console.log("📨 Sending login email to:", email);
+    try {
+      await sendEmail(email, subject, text);
+      console.log("✅ Login email sent successfully.");
+    } catch (emailErr) {
+      console.error("❌ Failed to send login email:", emailErr.message);
+    }
 
     res.status(200).json({
       message: "Login successful",

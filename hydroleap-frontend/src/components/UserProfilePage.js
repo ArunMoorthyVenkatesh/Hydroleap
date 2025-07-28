@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import Header from "./Header"; // ✅ Ensures logo is included
+import Header from "./Header";
 const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const ACCENT = "#21c6bc";
@@ -14,16 +14,14 @@ const UserProfilePage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-const res = await axios.get(`${API_BASE}/user/me`, {
-  headers: { Authorization: `Bearer ${token}` },
-});
-
+        const res = await axios.get(`${API_BASE}/user/me`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
         setUser(res.data);
       } catch (err) {
         alert("Could not load profile");
       }
     };
-
     fetchProfile();
   }, [token]);
 
@@ -37,7 +35,6 @@ const res = await axios.get(`${API_BASE}/user/me`, {
       <Header />
       <div style={styles.overlay}>
         <div style={styles.card}>
-
           {/* Back Button */}
           <button onClick={() => navigate(-1)} style={styles.backButton}>
             ← Back
@@ -52,6 +49,7 @@ const res = await axios.get(`${API_BASE}/user/me`, {
             <label style={styles.label}>Email:</label>
             <p style={styles.value}>{user.email}</p>
           </div>
+
           <div style={styles.formGroup}>
             <label style={styles.label}>Phone:</label>
             <p style={styles.value}>{user.phone}</p>

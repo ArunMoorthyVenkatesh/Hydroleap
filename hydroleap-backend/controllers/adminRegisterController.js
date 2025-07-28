@@ -4,11 +4,9 @@ const bcrypt = require("bcrypt");
 const PendingAdmin = require("../models/PendingAdmin");
 const Admin = require("../models/Admin");
 
-
 exports.registerPendingAdmin = async (req, res) => {
   try {
     const { name, email, phone, dob, gender, password } = req.body;
-
 
     const existingAdmin = await Admin.findOne({ email });
     const existingPending = await PendingAdmin.findOne({ email });
@@ -26,7 +24,6 @@ exports.registerPendingAdmin = async (req, res) => {
   }
 };
 
-
 exports.approvePendingAdmin = async (req, res) => {
   try {
     const { id } = req.params; // pending admin _id
@@ -42,7 +39,7 @@ exports.approvePendingAdmin = async (req, res) => {
     const { _id, password, ...rest } = pending._doc;
 
     const newAdmin = new Admin({
-      ...rest,
+      ...rest,                 
       password: hashedPassword,
       tenantId: "T" + Date.now(),
     });

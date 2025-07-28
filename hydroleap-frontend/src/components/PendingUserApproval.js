@@ -9,7 +9,7 @@ const PendingUserApprovalSection = () => {
   useEffect(() => {
     const fetchPendingUsers = async () => {
       try {
-const res = await axios.get(`${API_BASE}/admin/pending-users`);
+        const res = await axios.get(`${API_BASE}/admin/pending-users`);
         setPendingUsers(res.data);
         setError(null);
       } catch (err) {
@@ -21,7 +21,10 @@ const res = await axios.get(`${API_BASE}/admin/pending-users`);
 
   const handleApprove = async (userId) => {
     try {
-      await axios.post(`${API_BASE}/admin/approve-user/${userId}`);
+      await axios.post(`${API_BASE}/admin/handle-user-request`, {
+        id: userId,
+        action: "approve"
+      });
       setPendingUsers((prev) => prev.filter((u) => u._id !== userId));
       alert("✅ User approved and added to active users.");
     } catch (err) {
@@ -31,7 +34,10 @@ const res = await axios.get(`${API_BASE}/admin/pending-users`);
 
   const handleReject = async (userId) => {
     try {
-      await axios.post(`${API_BASE}/admin/reject-user/${userId}`);
+      await axios.post(`${API_BASE}/admin/handle-user-request`, {
+        id: userId,
+        action: "reject"
+      });
       setPendingUsers((prev) => prev.filter((u) => u._id !== userId));
       alert("❌ User rejected and removed from pending list.");
     } catch (err) {
@@ -48,16 +54,21 @@ const res = await axios.get(`${API_BASE}/admin/pending-users`);
       ) : (
         pendingUsers.map((user) => (
           <div key={user._id} style={styles.card}>
-            <p><strong>Name:</strong> {user.name}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
-            <p><strong>DOB:</strong> {user.dob || "N/A"}</p>
-            <p><strong>Gender:</strong> {user.gender || "N/A"}</p>
+            <div style={styles.title}>{user.name || <span style={styles.faint}>No Name</span>}</div>
+            <div style={styles.detail}><b>Email:</b> {user.email || <span style={styles.faint}>N/A</span>}</div>
+            <div style={styles.detail}><b>Phone:</b> {user.phone || <span style={styles.faint}>N/A</span>}</div>
+            <div style={styles.detail}><b>DOB:</b> {user.dob || <span style={styles.faint}>N/A</span>}</div>
+            <div style={styles.detail}><b>Gender:</b> {user.gender || <span style={styles.faint}>N/A</span>}</div>
+            {user.createdAt && (
+              <div style={styles.meta}><b>Requested:</b> {new Date(user.createdAt).toLocaleDateString()}</div>
+            )}
             <div style={styles.buttonContainer}>
               <button onClick={() => handleApprove(user._id)} style={styles.buttonGreen}>
                 Approve
               </button>
-
+              <button onClick={() => handleReject(user._id)} style={styles.buttonRed}>
+                Reject
+              </button>
             </div>
           </div>
         ))
@@ -76,12 +87,34 @@ const styles = {
     maxWidth: "580px",
     margin: "0 auto"
   },
-  heading: {
-    marginBottom: "2rem",
-    textAlign: "center",
-    color: "#23c1b5",
+  title: {
     fontWeight: 700,
-    fontSize: "2rem"
+    fontSize: 21,
+    color: "#23c1b5",
+    marginBottom: 3,
+  },
+  detail: {
+    color: "#376872",
+    fontSize: 15,
+    marginBottom: 2,
+  },
+  meta: {
+    color: "#6d8996",
+    fontSize: 14,
+    marginTop: 6,
+    marginBottom: 6,
+  },
+  faint: {
+    color: "#aaa",
+    fontWeight: 400,
+    fontStyle: "italic",
+  },
+  card: {
+    backgroundColor: "#f8ffff",
+    padding: "1.5rem",
+    borderRadius: "10px",
+    marginBottom: "1.5rem",
+    boxShadow: "0 0 10px rgba(30,200,180,0.06)",
   },
   error: {
     color: "red",
@@ -90,13 +123,6 @@ const styles = {
   info: {
     textAlign: "center",
     color: "#555"
-  },
-  card: {
-    backgroundColor: "#f8ffff",
-    padding: "1.5rem",
-    borderRadius: "10px",
-    marginBottom: "1.5rem",
-    boxShadow: "0 0 10px rgba(30,200,180,0.06)",
   },
   buttonContainer: {
     marginTop: "1rem",

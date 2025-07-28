@@ -85,6 +85,21 @@ router.post("/approve-user/:id", async (req, res) => {
   }
 });
 
+// ---- ADDED THIS ROUTE ----
+router.post("/reject-user/:id", async (req, res) => {
+  try {
+    const deleted = await PendingUser.findByIdAndDelete(req.params.id);
+    if (!deleted) {
+      return res.status(404).json({ message: "Pending user not found" });
+    }
+    res.status(200).json({ message: "User rejected and removed from pending list." });
+  } catch (err) {
+    console.error("❌ Reject User Error:", err.message);
+    res.status(500).json({ message: "Failed to reject user." });
+  }
+});
+// --------------------------
+
 router.get("/list-admins", async (req, res) => {
   try {
     const admins = await Admin.find().collation({ locale: "en", strength: 2 });

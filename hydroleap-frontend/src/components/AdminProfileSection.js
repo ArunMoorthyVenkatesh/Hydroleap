@@ -14,10 +14,9 @@ const AdminProfileSection = () => {
           alert('No token found. Please log in again.');
           return;
         }
-const response = await axios.get(`${API_BASE}/admin/profile`, {
-  headers: { Authorization: `Bearer ${token}` }
-});
-
+        const response = await axios.get(`${API_BASE}/admin/profile`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
         setAdminData(response.data);
       } catch (error) {
         setAdminData(null);

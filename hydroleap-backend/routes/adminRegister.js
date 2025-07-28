@@ -17,6 +17,8 @@ router.post("/request-admin-signup", async (req, res) => {
       confirmPassword,
     } = req.body;
 
+
+
     if (password !== confirmPassword) {
       return res.status(400).json({ message: "Passwords do not match." });
     }

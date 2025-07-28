@@ -42,7 +42,6 @@ const adminRoutes = require("./routes/admin");
 const userApprovalRoutes = require("./routes/userApproval");
 const adminApprovalRoutes = require("./routes/adminApproval");
 const adminRegisterRoutes = require("./routes/adminRegister");
-const adminLoginRoutes = require("./routes/adminLogin");
 const adminProfileRoutes = require("./routes/adminProfile");
 const adminAuthRoutes = require("./routes/adminAuth");
 const iotRoutes = require("./routes/iot2"); // ✅ Correct route import
@@ -76,7 +75,6 @@ app.use("/api/admin", adminRoutes);
 app.use("/api/admin", userApprovalRoutes);
 app.use("/api/admin", adminApprovalRoutes);
 app.use("/api/admin-register", adminRegisterRoutes);
-app.use("/api/admin-login", adminLoginRoutes);
 app.use("/api/admin", adminProfileRoutes);
 app.use("/api/admin", adminAuthRoutes);
 
@@ -118,7 +116,7 @@ mongoose
   });
 
 // --- Start Server ---
-const PORT = process.env.PORT || 5002;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });

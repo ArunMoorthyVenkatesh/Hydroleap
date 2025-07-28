@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Header from "./Header";
 
-// ✅ Use base API from .env or fallback to localhost
 const API_BASE = process.env.REACT_APP_API_BASE || "http://localhost:5001/api";
 
 const AddAdmin = () => {

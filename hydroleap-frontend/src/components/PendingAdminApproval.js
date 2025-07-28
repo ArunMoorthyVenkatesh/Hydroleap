@@ -7,16 +7,15 @@ const PendingAdminApprovalSection = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-const fetchPendingAdmins = async () => {
-  try {
-    const res = await axios.get(`${API_BASE}/admin/pending-admins`);
-    setPendingAdmins(res.data);
-    setError(null);
-  } catch (error) {
-    setError("Failed to fetch pending admin requests.");
-  }
-};
-
+    const fetchPendingAdmins = async () => {
+      try {
+        const res = await axios.get(`${API_BASE}/admin/pending-admins`);
+        setPendingAdmins(res.data);
+        setError(null);
+      } catch (error) {
+        setError("Failed to fetch pending admin requests.");
+      }
+    };
     fetchPendingAdmins();
   }, []);
 
@@ -44,6 +43,7 @@ const fetchPendingAdmins = async () => {
           {pendingAdmins.map((admin) => (
             <div key={admin._id} style={styles.card}>
               <p><strong>Name:</strong> {admin.firstName} {admin.middleName} {admin.lastName}</p>
+
               <p><strong>Email:</strong> {admin.email}</p>
               <p><strong>Phone:</strong> {admin.phone}</p>
               <p><strong>DOB:</strong> {admin.dob}</p>

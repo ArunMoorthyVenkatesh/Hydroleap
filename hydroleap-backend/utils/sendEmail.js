@@ -1,5 +1,5 @@
 const nodemailer = require("nodemailer");
-require("dotenv").config(); 
+require("dotenv").config();
 
 const sendEmail = async (to, subject, text) => {
   try {
@@ -21,10 +21,9 @@ const sendEmail = async (to, subject, text) => {
     };
 
     const info = await transporter.sendMail(mailOptions);
-    console.log(`📧 Email sent: ${info.messageId}`);
+    console.log(`📧 Email sent to ${to}: ${info.messageId}`);
   } catch (error) {
     console.error("❌ Error sending email:", error.message);
-    throw error;
   }
 };
 
